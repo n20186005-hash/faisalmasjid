@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="کوکی ترتیبات — فیصل مسجد رہنما" description="فیصل مسجد رہنما کی کوکی اور تجزیاتی رضامندی براہِ راست منظم کریں؛ ضروری، تجزیاتی، ترجیحی اور مارکیٹنگ زمروں کی واضح وضاحت۔" compactHeader={true}>
+  <section class="legal-hero"><div class="container"><span class="eyebrow">آپ کا اختیار</span><h1>کوکی ترتیبات</h1><p>آخری اپ ڈیٹ: اگست 2026</p></div></section>
+  <section class="section"><div class="container cookie-layout">
+    <div class="cookie-intro">
+      <h2>رضامندی آپ کے اختیار میں ہے</h2>
+      <p>ہم ویب سائٹ کے تجربے اور گمنام استعمال کو سمجھنے کے لیے محدود ٹیکنالوجیاں استعمال کرتے ہیں۔ تجزیات پہلے سے بند ہیں اور صرف آپ کے فعال انتخاب کے بعد شروع ہوتے ہیں۔ مارکیٹنگ یا اشتہاری ٹیکنالوجی اس غیر منافع بخش سائٹ پر استعمال نہیں کی جاتی۔</p>
+      <div id="consent-status" class="status" role="status" aria-live="polite">محفوظ شدہ ترجیح پڑھی جا رہی ہے…</div>
+    </div>
+    <form id="cookie-form" class="cookie-form">
+      <article class="cookie-row always">
+        <div><span>ضروری</span><h3>ضروری فعالیت</h3><p>بنیادی صفحہ فراہم کرنے، حفاظت اور آپ کی رازداری کی ترجیح کو یاد رکھنے جیسی فعالیت۔ ہماری جامد سائٹ اپنی طرف سے اشتہاری پروفائل نہیں بناتی۔</p></div>
+        <label><input type="checkbox" checked disabled /><b>ہمیشہ فعال</b></label>
+      </article>
+      <article class="cookie-row">
+        <div><span>تجزیاتی</span><h3>گوگل اینالیٹکس 4</h3><p>آپ کی رضامندی پر مجموعی استعمال کے نمونے سمجھنے میں مدد دیتا ہے۔ فعال نہ کرنے پر جی اے 4 لوڈر ہماری طرف سے براؤزر میں شامل نہیں ہوتا۔</p></div>
+        <label class="switch"><input id="analytics" name="analytics" type="checkbox" /><i></i><b>اختیاری</b></label>
+      </article>
+      <article class="cookie-row">
+        <div><span>ترجیحات</span><h3>صارف کی ترجیح</h3><p>آپ کے رضامندی کے انتخاب کو اسی براؤزر میں مقامی ذخیرہ کے ذریعے محفوظ کرتا ہے۔ مستقبل میں رنگی وضع یا دکھاوے کی ترجیحات شامل ہوں تو وہ بھی اسی زمرے میں آئیں گی۔</p></div>
+        <label class="switch"><input id="preferences" name="preferences" type="checkbox" /><i></i><b>اختیاری</b></label>
+      </article>
+      <article class="cookie-row disabled-row">
+        <div><span>مارکیٹنگ</span><h3>ذاتی اشتہارات</h3><p>ہم ذاتی نوعیت کے اشتہارات، الحاقی اشتہاری سراغ یا مارکیٹنگ پکسلز استعمال نہیں کرتے۔ اس لیے یہ زمرہ بند اور غیر فعال ہے۔</p></div>
+        <label><input type="checkbox" disabled /><b>استعمال نہیں ہوتا</b></label>
+      </article>
+      <div class="cookie-actions">
+        <button class="button button-primary" type="submit">ترجیحات محفوظ کریں</button>
+        <button class="button button-outline" id="reject-all" type="button">اختیاری سب مسترد کریں</button>
+      </div>
+      <p class="fine">صفحے میں شامل گوگل نقشہ ایک الگ تیسرے فریق کی خدمت ہے اور نقشہ لوڈ ہونے پر گوگل اپنی ضروری تکنیکی ڈیٹا کارروائی کر سکتا ہے۔ براؤزر کی سطح پر تیسرے فریق کی کوکی روکنا آپ کے براؤزر کی ترتیبات سے بھی منظم کی جا سکتی ہے۔</p>
+    </form>
+  </div></section>
+  <script is:inline>
+    (() => {
+      const KEY = 'faisal-masjid-consent-v1';
+      const form = document.getElementById('cookie-form');
+      const analytics = document.getElementById('analytics');
+      const preferences = document.getElementById('preferences');
+      const reject = document.getElementById('reject-all');
+      const status = document.getElementById('consent-status');
+      const show = (text) => { if (status) status.textContent = text; };
+      const save = (value) => {
+        localStorage.setItem(KEY, JSON.stringify(value));
+        window.dispatchEvent(new CustomEvent('cookie-consent-changed', { detail: value }));
+        show('آپ کی ترجیحات اس براؤزر میں محفوظ کر دی گئی ہیں۔');
+      };
+      try {
+        const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+        if (saved) {
+          if (analytics) analytics.checked = saved.analytics === true;
+          if (preferences) preferences.checked = saved.preferences === true;
+          show('آپ کی پہلے سے محفوظ ترجیحات دکھائی جا رہی ہیں۔');
+        } else show('ابھی کوئی اختیاری رضامندی محفوظ نہیں؛ تجزیات بند ہیں۔');
+      } catch (_) { show('ترجیح نہیں پڑھی جا سکی؛ اختیاری سراغ رسانی بند سمجھی جائے گی۔'); }
+      form?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        save({ necessary: true, analytics: !!analytics?.checked, preferences: !!preferences?.checked, marketing: false });
+      });
+      reject?.addEventListener('click', () => {
+        if (analytics) analytics.checked = false;
+        if (preferences) preferences.checked = false;
+        save({ necessary: true, analytics: false, preferences: false, marketing: false });
+      });
+    })();
+  </script>
+</BaseLayout>
+<style>
+.legal-hero{background:#0b211c;color:#f4efe2;padding:72px 0 58px}.legal-hero h1{font-size:clamp(3rem,7vw,5.4rem);margin:10px 0;line-height:1.1}.legal-hero p{color:#adbbb5;margin:0}.cookie-layout{display:grid;grid-template-columns:.7fr 1.3fr;gap:64px;align-items:start}.cookie-intro{position:sticky;top:108px}.cookie-intro h2{font-size:2.2rem;line-height:1.35;margin:0 0 14px}.cookie-intro p{color:#566b63}.status{margin-top:24px;padding:16px 18px;border-radius:16px;background:#efe3c4;color:#3e4b41;font-size:.85rem}.cookie-form{display:grid;gap:12px}.cookie-row{display:grid;grid-template-columns:1fr 150px;gap:24px;align-items:center;padding:26px;border:1px solid var(--line);border-radius:22px;background:#fffdf8}.cookie-row>div>span{color:#987334;font-size:.72rem;font-weight:800}.cookie-row h3{margin:6px 0;font-size:1.15rem}.cookie-row p{margin:0;color:#5b6e67;font-size:.86rem}.cookie-row label{display:flex;align-items:center;justify-content:flex-end;gap:8px;color:#56665f;font-size:.76rem}.cookie-row input{width:18px;height:18px;accent-color:#0b211c}.disabled-row{opacity:.72}.cookie-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}.fine{font-size:.78rem;color:#6c7d75}.switch i{width:42px;height:24px;border-radius:999px;background:#c7cec9;position:relative;display:inline-block}.switch i:after{content:"";position:absolute;width:18px;height:18px;top:3px;right:3px;background:white;border-radius:50%;transition:.2s}.switch input{position:absolute;opacity:0;pointer-events:none}.switch input:checked+i{background:#0b211c}.switch input:checked+i:after{transform:translateX(-18px)}@media(max-width:850px){.cookie-layout{grid-template-columns:1fr}.cookie-intro{position:static}.cookie-row{grid-template-columns:1fr}.cookie-row label{justify-content:flex-start}}
+</style>

@@ -1,0 +1,337 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { photos, siteMeta } from '../data/site';
+
+const pageUrl = Astro.site ? new URL('/', Astro.site).href : undefined;
+const attractionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': ['TouristAttraction', 'Mosque'],
+  name: siteMeta.attractionName,
+  alternateName: siteMeta.alternateName,
+  description: 'اسلام آباد میں مارگلہ پہاڑیوں کے دامن میں واقع پاکستان کی قومی مسجد؛ جدید خیمہ نما فنِ تعمیر، چار مینار اور وسیع صحن اس کی شناخت ہیں۔',
+  ...(pageUrl ? { url: pageUrl } : {}),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Shah Faisal Ave, E-8',
+    addressLocality: 'Islamabad',
+    postalCode: '44000',
+    addressCountry: 'PK',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: siteMeta.latitude,
+    longitude: siteMeta.longitude,
+  },
+  isAccessibleForFree: true,
+  openingHoursSpecification: [{
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+    opens: '00:00',
+    closes: '23:59',
+  }],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: siteMeta.rating,
+    reviewCount: siteMeta.reviewCount,
+    bestRating: 5,
+  },
+  image: [photos.hero.src, photos.courtyard.src, photos.night.src],
+};
+
+const faqItems = [
+  { q: 'کیا فیصل مسجد میں داخلے کے لیے ٹکٹ درکار ہے؟', a: 'عام طور پر مسجد میں داخلہ مفت ہے اور سیاحتی ٹکٹ درکار نہیں۔ تاہم نماز، جمعہ، رمضان، عید یا سکیورٹی انتظامات کے دوران بعض حصوں تک رسائی محدود ہو سکتی ہے۔' },
+  { q: 'غیر مسلم زائرین مسجد دیکھ سکتے ہیں؟', a: 'عمومی طور پر باادب سیاح مسجد کے بیرونی حصوں اور دستیاب اندرونی حصوں کا مشاہدہ کر سکتے ہیں، لیکن مرکزی عبادت گاہ میں رسائی نماز اور انتظامی ہدایات کے مطابق بدل سکتی ہے۔ موقع پر موجود عملے اور سکیورٹی کی ہدایات کو ترجیح دیں۔' },
+  { q: 'لباس کے بارے میں کیا احتیاط ضروری ہے؟', a: 'کندھوں اور ٹانگوں کو ڈھانپنے والا سادہ اور باوقار لباس مناسب ہے۔ خواتین کے لیے سر ڈھانپنا احتراماً بہتر اور بعض اوقات ضروری سمجھا جاتا ہے۔ عبادت گاہ میں داخل ہونے سے پہلے جوتے اتارے جاتے ہیں۔' },
+  { q: 'دورے کے لیے کتنا وقت رکھنا چاہیے؟', a: 'فنِ تعمیر، صحن، اندرونی حصے اور تصویری مشاہدے کے لیے تقریباً 60 سے 90 منٹ ایک مناسب عملی مدت ہے۔ جمعہ یا نماز کے اوقات میں اضافی وقت رکھیں۔' },
+  { q: 'بہترین وقت کون سا ہے؟', a: 'نسبتاً پرسکون سیاحتی مشاہدے کے لیے عام دفتری دنوں کی صبح یا عصر سے پہلے کا وقت موزوں رہتا ہے۔ غروبِ آفتاب کے قریب عمارت اور مارگلہ پہاڑیوں کی روشنی خاص طور پر خوبصورت ہوتی ہے، مگر نماز کے اوقات کا احترام ضروری ہے۔' },
+  { q: 'کیا پارکنگ اور بیت الخلا موجود ہیں؟', a: 'مسجد کے احاطے اور قریب پارکنگ کی جگہیں اور وضو/بیت الخلا کی سہولیات موجود رہتی ہیں، مگر جمعہ، رمضان اور بڑے اجتماعات میں گنجائش اور رسائی بدل سکتی ہے۔ صفائی اور کھلے حصوں کی حالت بھی وقت کے ساتھ مختلف ہو سکتی ہے۔' },
+  { q: 'پبلک ٹرانسپورٹ سے کیسے پہنچیں؟', a: 'سی ڈی اے کے شائع شدہ فیڈر روٹ FR-03A میں پی آئی ایم ایس ہسپتال/میٹرو اسٹیشن اور فیصل مسجد شامل ہیں۔ روٹ اور فریکوئنسی میں تبدیلی ممکن ہے، اس لیے روانگی سے پہلے سرکاری کیپٹل ماس ٹرانزٹ معلومات یا ایپ سے تازہ شیڈول دیکھیں۔' },
+  { q: 'کیا مسجد میں فوٹوگرافی کی اجازت ہے؟', a: 'بیرونی فنِ تعمیر کی فوٹوگرافی عام سیاحتی سرگرمی ہے، مگر عبادت کرنے والوں کی پرائیویسی، سکیورٹی نشان دہی اور موقع پر موجود ہدایات کا احترام کریں۔ اندرونی حصوں میں فلیش، ٹرائی پوڈ یا مخصوص زاویوں پر پابندی ہو سکتی ہے۔' },
+];
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+
+const facilityItems = [
+  ['وضو اور بیت الخلا', 'مسجد کمپلیکس میں وضو اور بیت الخلا کی سہولیات موجود ہیں۔ مختلف حصوں کی دستیابی اور صفائی وقت، ہجوم اور دیکھ بھال کے مطابق بدل سکتی ہے۔'],
+  ['پارکنگ', 'احاطے اور قریب عمومی پارکنگ کی گنجائش موجود ہے۔ جمعہ، رمضان، عید اور بڑے اجتماعات میں سکیورٹی عملہ گاڑیوں کو متبادل حصوں کی طرف بھیج سکتا ہے؛ مقررہ فیس کے بارے میں کوئی مستقل عوامی نرخ فرض نہ کریں۔'],
+  ['وہیل چیئر اور محدود نقل و حرکت', 'وسیع صحن کے کئی حصے ہموار ہیں، مگر بعض راستوں، داخلی تبدیلیوں یا سیڑھیوں کے باعث مدد درکار ہو سکتی ہے۔ مخصوص قابلِ رسائی راستہ سفر سے پہلے موقع پر تصدیق کریں۔'],
+  ['پینے کا پانی اور آرام', 'مسجد عبادت گاہ ہے، مکمل سیاحتی لاؤنج نہیں۔ پانی اور آرام کے دستیاب مقامات موقع کے انتظام کے مطابق ہوتے ہیں؛ گرمی میں اپنی پانی کی بوتل ساتھ رکھنا بہتر ہے۔'],
+  ['کھانا', 'عبادت کے مرکزی حصے میں کھانے کو ترجیح نہ دیں۔ قریبی شہری سیکٹرز میں پاکستانی کھانا، چائے، بیکری، کیفے اور خاندانی ریستوران جیسی اقسام دستیاب ہیں۔'],
+  ['قیام', 'اسلام آباد کے مرکزی سیکٹرز میں ہوٹل، گیسٹ ہاؤس اور سروسڈ اپارٹمنٹ جیسی مختلف رہائشی اقسام ملتی ہیں؛ یہ رہنما کسی مخصوص کاروبار کی توثیق نہیں کرتا۔'],
+  ['روزمرہ خریداری', 'قریبی تجارتی مراکز میں جنرل اسٹور، سپرمارکیٹ، فارمیسی اور سہولت اسٹور جیسی خدمات عام ہیں۔ مذہبی مقام کے اندر خریداری پر انحصار نہ کریں۔'],
+  ['ایندھن اور برقی چارجنگ', 'اسلام آباد کے شہری سیکٹرز میں روایتی فیول اسٹیشن اور محدود برقی گاڑی چارجنگ سہولیات مل سکتی ہیں۔ چارجر کی قسم، دستیابی اور اوقات روانگی سے پہلے متعلقہ نقشہ/آپریٹر پر چیک کریں۔'],
+];
+
+const nearby = [
+  ['مارگلہ ہلز نیشنل پارک', 'مسجد کے پس منظر میں واقع پہاڑی سلسلہ؛ پیدل راستوں اور قدرتی مناظر کے لیے اسی دن کا موزوں امتزاج۔'],
+  ['دامنِ کوہ', 'اسلام آباد کے شہری منظر کو بلندی سے دیکھنے کے لیے معروف مقام؛ موسم اور ٹریفک کے مطابق اضافی وقت رکھیں۔'],
+  ['سیدپور گاؤں', 'مارگلہ کے دامن میں تاریخی بستی اور ثقافتی ماحول؛ مسجد کے دورے کے ساتھ شہر کی پرانی آبادی کا مختلف پہلو دکھاتی ہے۔'],
+  ['پاکستان مونومنٹ و میوزیم', 'قومی تاریخ اور علامتی فنِ تعمیر کو سمجھنے کے لیے موزوں؛ فیصل مسجد کی جدید قومی شناخت کے ساتھ تقابلی مطالعہ ممکن ہے۔'],
+  ['لوک ورثہ', 'پاکستان کے علاقائی ثقافتی ورثے، دستکاری اور لوک روایات پر توجہ دینے والا ثقافتی مقام۔'],
+  ['راول جھیل کے اطراف', 'شہر کے جنوب مشرق میں کھلا منظر اور تفریحی ماحول؛ وقت کی کمی ہو تو اسے الگ نصف روزہ پروگرام سمجھیں۔'],
+];
+---
+<BaseLayout
+  title="فیصل مسجد اسلام آباد — تاریخ، فنِ تعمیر، رسائی اور مکمل سیاحتی رہنما"
+  description="فیصل مسجد اسلام آباد کا آزاد غیر منافع بخش اردو رہنما: تاریخ، معماری، آداب، مفت داخلہ، پبلک ٹرانسپورٹ، ائیرپورٹ رسائی، پارکنگ، سہولیات، نقشہ اور عام سوالات۔"
+  ogImage={photos.hero.src}
+  jsonLd={[attractionJsonLd, faqJsonLd]}
+>
+  <section class="hero">
+    <img class="hero-photo" src={photos.hero.src} alt={photos.hero.alt} width="1280" height="853" fetchpriority="high" />
+    <div class="hero-shade"></div>
+    <div class="hero-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="container hero-content">
+      <div class="hero-copy">
+        <div class="hero-kicker"><span>اسلام آباد کی قومی مسجد</span><span>مارگلہ پہاڑیوں کا دامن</span></div>
+        <h1>فیصل مسجد</h1>
+        <p class="hero-sub">روایتی گنبد کے بجائے ایک عظیم خیمہ نما چھت، چار باریک مینار اور پہاڑوں کے سامنے سفید جیومیٹری — پاکستان کی جدید قومی شناخت کا ایک غیر معمولی تعمیراتی باب۔</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#visit">دورہ ترتیب دیں <span aria-hidden="true">←</span></a>
+          <a class="button button-ghost" href="#history">تاریخ پڑھیں</a>
+        </div>
+      </div>
+      <div class="hero-facts card">
+        <div><small>مقام</small><strong>شاہ فیصل ایونیو، E-8</strong></div>
+        <div><small>داخلہ</small><strong>عمومی طور پر مفت</strong></div>
+        <div><small>موزوں مدت</small><strong>60–90 منٹ</strong></div>
+        <div><small>عوامی درجہ بندی</small><strong>{siteMeta.rating} / 5</strong><span>درجہ بندی بدل سکتی ہے</span></div>
+      </div>
+      <a class="photo-credit" href={photos.hero.source} target="_blank" rel="noopener noreferrer">تصویر: {photos.hero.credit}</a>
+    </div>
+  </section>
+
+  <section class="quickbar" aria-label="اہم عملی معلومات">
+    <div class="container quick-grid">
+      <div><span>◈</span><p><strong>مذہبی مقام</strong><small>نماز اور عبادت کو سیاحت پر ترجیح حاصل ہے</small></p></div>
+      <div><span>◇</span><p><strong>لباس</strong><small>سادہ، باوقار اور جسم ڈھانپنے والا</small></p></div>
+      <div><span>⌁</span><p><strong>جوتے</strong><small>عبادت گاہ میں داخلے سے پہلے اتاریں</small></p></div>
+      <div><span>△</span><p><strong>ہجوم</strong><small>جمعہ، رمضان اور عید پر زیادہ</small></p></div>
+    </div>
+  </section>
+
+  <section class="section intro mosque-motif">
+    <div class="container intro-grid">
+      <div>
+        <span class="eyebrow">جگہ کو سمجھیں</span>
+        <h2 class="section-title">یہ صرف ایک تصویری نشان نہیں، ایک فعال عبادت گاہ بھی ہے</h2>
+      </div>
+      <div class="intro-copy">
+        <p>فیصل مسجد اسلام آباد کے شمالی کنارے پر مارگلہ پہاڑیوں کے دامن میں واقع ہے۔ اس کا کھلا سفید حجم، خیمہ نما مرکزی چھت اور چار مینار شہر کے منصوبہ بند افق کے مقابل ایک واضح علامت بناتے ہیں۔ عمارت کو سیاحتی مقام کے طور پر دیکھتے وقت یہ بنیادی بات اہم ہے کہ یہاں روزمرہ عبادت، جمعہ اور مذہبی اجتماعات ہوتے ہیں۔</p>
+        <p>اس رہنما میں تاریخی اور تعمیراتی معلومات کو زائرین کے عملی سوالات سے جوڑا گیا ہے: کب جانا بہتر ہے، نماز کے اوقات میں کیسے برتاؤ کرنا چاہیے، پبلک ٹرانسپورٹ کہاں سے ملتی ہے، پارکنگ اور بیت الخلا کے بارے میں کیا توقع رکھی جائے اور قریبی شہری سہولیات کس نوعیت کی ہیں۔</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="history" class="section section-dark history">
+    <div class="container">
+      <SectionHeading eyebrow="تاریخی پس منظر" title="ایک بین الاقوامی مقابلے سے قومی مسجد تک" lead="فیصل مسجد کی کہانی ایک فرد یا ایک عطیے تک محدود نہیں؛ یہ بین الاقوامی ڈیزائن مقابلہ، پاکستانی ادارہ جاتی منصوبہ بندی، سعودی مالی تعاون اور کئی سال کی تعمیر کا مجموعہ ہے۔" />
+      <div class="timeline">
+        <article><span>1969</span><h3>بین الاقوامی ڈیزائن مقابلہ</h3><p>کیپٹل ڈویلپمنٹ اتھارٹی اور پاکستانی تعمیراتی حلقوں کے زیرِ اہتمام مقابلے میں 17 ممالک سے 43 تجاویز آئیں۔ ترک معمار ویدات دالوکے کا تصور منتخب ہوا۔</p></article>
+        <article><span>1970ء کی دہائی</span><h3>روایتی گنبد سے مختلف تصور</h3><p>منتخب منصوبہ روایتی جنوبی ایشیائی مسجد کی نقل کے بجائے بڑے بدوی خیمے جیسی تکونی کنکریٹ خول پر قائم تھا، جس نے جدید اسلام آباد کے لیے نئی بصری زبان تجویز کی۔</p></article>
+        <article><span>1976</span><h3>تعمیر کا آغاز</h3><p>تعمیراتی مرحلہ 1970 کی دہائی کے وسط میں شروع ہوا۔ سعودی عرب کے شاہ فیصل کے نام سے مسجد منسوب ہوئی؛ سعودی تعاون اہم تھا، جبکہ پاکستانی سرکاری اور سی ڈی اے ریکارڈ تعمیر و دیکھ بھال میں مقامی ادارہ جاتی کردار بھی واضح کرتے ہیں۔</p></article>
+        <article><span>1986</span><h3>عمارت کی تکمیل</h3><p>تقریباً ایک دہائی کی تعمیر کے بعد مرکزی کمپلیکس مکمل ہوا۔ بعد کے برسوں میں یہ قومی مسجد، فعال عبادت گاہ اور اسلام آباد کی سب سے پہچانی جانے والی جدید عمارتوں میں شمار ہونے لگی۔</p></article>
+      </div>
+      <div class="history-note"><strong>ادارتی نوٹ</strong><p>مشہور مختصر روایت اسے صرف “سعودی تحفہ” کہتی ہے، لیکن پاکستانی پارلیمانی اور سی ڈی اے مواد تعمیر، مالیات اور دیکھ بھال میں پاکستان اور سی ڈی اے کی شمولیت بھی بیان کرتا ہے۔ اسی لیے یہاں زیادہ متوازن تاریخی زبان استعمال کی گئی ہے۔</p></div>
+    </div>
+  </section>
+
+  <section id="architecture" class="section architecture">
+    <div class="container architecture-grid">
+      <div class="arch-image">
+        <img src={photos.courtyard.src} alt={photos.courtyard.alt} width="1280" height="853" loading="lazy" />
+        <a href={photos.courtyard.source} target="_blank" rel="noopener noreferrer">{photos.courtyard.credit}</a>
+      </div>
+      <div>
+        <SectionHeading eyebrow="فنِ تعمیر" title="گنبد کے بغیر مسجد: خیمہ، پہاڑ اور جیومیٹری" lead="ویدات دالوکے نے عمارت کو تاریخی طرز کی نقل بنانے کے بجائے عبادت، منظرنامے اور جدید انجینئرنگ کے ایک جامع نشان کے طور پر سوچا۔" />
+        <div class="arch-points">
+          <article><b>01</b><div><h3>خیمہ نما مرکزی خول</h3><p>آٹھ رخا کنکریٹ ساخت اپنی تیز مثلثی سطحوں سے بدوی خیمے کا تجریدی تاثر دیتا ہے۔ اسی وجہ سے مسجد دور سے بھی روایتی گنبد والی عمارتوں سے فوراً مختلف نظر آتی ہے۔</p></div></article>
+          <article><b>02</b><div><h3>چار باریک مینار</h3><p>چاروں کونوں پر اٹھتے ہوئے بلند مینار مرکزی چھت کے کم اور پھیلے ہوئے حجم کے مقابل عمودی توازن پیدا کرتے ہیں، اور شہر کے دور دراز حصوں سے خاکہ واضح کرتے ہیں۔</p></div></article>
+          <article><b>03</b><div><h3>مارگلہ ہلز بطور پس منظر</h3><p>عمارت کا اثر صرف تعمیراتی مادّے سے نہیں بنتا؛ شمال میں پہاڑ خود مجموعی منظر کا حصہ ہیں۔ صبح، دھند، مون سون اور شام میں سفید سطحوں اور سبز/نیلے پس منظر کا رشتہ بدلتا رہتا ہے۔</p></div></article>
+          <article><b>04</b><div><h3>اندرونی خطاطی اور روشنی</h3><p>مرکزی ہال میں بڑے پیمانے کی خطاطی، هندسی سطحیں اور کنٹرول شدہ روشنی بیرونی سادگی سے مختلف روحانی ماحول پیدا کرتی ہیں۔ اندرونی رسائی ہمیشہ عبادت اور انتظامی ہدایات کے تابع ہے۔</p></div></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-white etiquette">
+    <div class="container">
+      <SectionHeading eyebrow="زائرین کے آداب" title="مسجد کو پہلے عبادت گاہ سمجھیں" lead="چند سادہ اصول آپ کے دورے کو احترام، سکون اور مقامی روایت کے مطابق رکھتے ہیں۔" />
+      <div class="etiquette-grid">
+        <article><span>01</span><h3>لباس باوقار رکھیں</h3><p>کندھے، سینہ اور ٹانگیں مناسب طور پر ڈھانپیں۔ خواتین کے لیے سر ڈھانپنے کے لیے اسکارف ساتھ رکھنا عملی انتخاب ہے۔</p></article>
+        <article><span>02</span><h3>نماز میں خاموش رہیں</h3><p>اذان اور جماعت کے وقت گفتگو، سیاحتی انداز میں تصویر بنوانا اور تیز نقل و حرکت کم کریں؛ عبادت کرنے والوں کے سامنے سے نہ گزریں۔</p></article>
+        <article><span>03</span><h3>جوتوں کی تیاری</h3><p>عبادت گاہ میں داخلے سے پہلے جوتے اتارنے ہوتے ہیں۔ جوتوں کا ہلکا تھیلا ساتھ رکھنے سے جوتے محفوظ اور راستہ منظم رہتا ہے۔</p></article>
+        <article><span>04</span><h3>تصویر میں پرائیویسی</h3><p>لوگوں کے چہروں، خواتین کے حصوں یا نماز کے قریبی مناظر کی تصویر اجازت کے بغیر نہ بنائیں۔ سکیورٹی کے اشاروں پر عمل کریں۔</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="visit" class="section visit">
+    <div class="container">
+      <SectionHeading eyebrow="دورہ ترتیب دیں" title="وقت، فیس اور دورے کی عملی مدت" lead="نیچے دی گئی معلومات منصوبہ بندی کے لیے ہیں؛ فعال مسجد ہونے کی وجہ سے نماز، سکیورٹی اور بڑے اجتماعات کے دن اندرونی رسائی بدل سکتی ہے۔" />
+      <div class="visit-cards">
+        <article class="visit-card featured"><small>داخلہ / فیس</small><strong>مفت</strong><p>عمومی سیاحتی داخلے کے لیے ٹکٹ کی ضرورت نہیں۔ عطیہ یا مذہبی خیرات کو داخلہ فیس نہ سمجھیں۔</p></article>
+        <article class="visit-card"><small>عوامی فہرست میں درج اوقات</small><strong>24 گھنٹے</strong><p>مگر اس کا مطلب ہر اندرونی حصہ ہر وقت سیاحوں کے لیے کھلا ہونا نہیں۔ نماز اور سکیورٹی ہدایات مقدم ہیں۔</p></article>
+        <article class="visit-card"><small>تجویز کردہ قیام</small><strong>60–90 منٹ</strong><p>صحن، فنِ تعمیر، دستیاب اندرونی حصہ اور پرسکون مشاہدہ شامل ہو۔ فوٹوگرافی یا ہجوم ہو تو زیادہ وقت رکھیں۔</p></article>
+        <article class="visit-card"><small>نسبتاً بہتر وقت</small><strong>صبح یا شام سے پہلے</strong><p>عام دفتری دنوں میں نسبتاً کم ہجوم مل سکتا ہے۔ غروب کے قریب روشنی خوبصورت ہے، مگر نماز کے وقت رفتار اور شور کم کریں۔</p></article>
+      </div>
+      <div class="season-grid">
+        <div><h3>گرمی</h3><p>دوپہر کی دھوپ صحن میں سخت محسوس ہو سکتی ہے۔ ہلکا لباس، پانی اور دھوپ سے بچاؤ رکھیں، مگر لباس مسجد کے آداب کے مطابق ہو۔</p></div>
+        <div><h3>مون سون</h3><p>بادل اور سبز مارگلہ خوبصورت پس منظر بناتے ہیں، لیکن بارش اور پھسلن کے لیے جوتے اور سفر کا اضافی وقت رکھیں۔</p></div>
+        <div><h3>سردی</h3><p>صبح اور شام ٹھنڈی ہو سکتی ہے؛ صاف موسم میں پہاڑی منظر واضح رہتا ہے۔ تہہ دار لباس عملی انتخاب ہے۔</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="facilities" class="section section-dark facilities">
+    <div class="container">
+      <SectionHeading eyebrow="سہولیات اور روزمرہ ضروریات" title="بیت الخلا سے پارکنگ، رہائش اور برقی گاڑی چارجنگ تک" lead="یہ حصہ مخصوص دکاندار یا کاروبار کی سفارش کے بجائے زائرین کو دستیاب سہولت کی قسم اور عملی احتیاط بتاتا ہے۔" />
+      <div class="facility-grid">
+        {facilityItems.map(([title, text], index) => (
+          <article><span>{String(index + 1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p></article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="transport" class="section transport">
+    <div class="container">
+      <SectionHeading eyebrow="تفصیلی رسائی" title="ائیرپورٹ، بس، ٹیکسی اور نجی گاڑی سے فیصل مسجد" lead="اسلام آباد کا منصوبہ بند سڑکوں کا جال مسجد تک رسائی آسان بناتا ہے، لیکن جمعہ، رمضان اور تعطیلات میں سکیورٹی/ٹریفک کی وجہ سے وقت بڑھ سکتا ہے۔" />
+      <div class="transport-grid">
+        <article class="transport-main card">
+          <span class="route-badge">ہوائی اڈہ</span>
+          <h3>اسلام آباد انٹرنیشنل ائیرپورٹ سے</h3>
+          <p>سڑک کے راستے فاصلہ تقریباً 30 کلومیٹر کے قریب پڑ سکتا ہے اور ٹریفک کے مطابق سفر عموماً 40–60 منٹ یا اس سے زیادہ لے سکتا ہے۔ سب سے سیدھا طریقہ لائسنس یافتہ ائیرپورٹ ٹیکسی یا مقامی ایپ کے ذریعے طلب کی جانے والی سواری ہے؛ سواری لینے کی مقررہ جگہ اور قیمت روانگی سے پہلے تصدیق کریں۔</p>
+          <p><strong>کم خرچ پبلک ٹرانسپورٹ:</strong> ائیرپورٹ سے شہر کی ماس ٹرانزٹ سروس استعمال کر کے مرکزی میٹرو نیٹ ورک تک آئیں، پھر پی آئی ایم ایس کے قریب تبدیلی اور ایف آر-03اے فیڈر سے فیصل مسجد کی سمت جائیں۔ تبدیلی کا طریقہ بدل سکتا ہے، اس لیے اسی دن سرکاری روٹ پلانر دیکھنا ضروری ہے۔</p>
+        </article>
+        <article class="transport-card card"><span class="route-badge">بس / میٹرو</span><h3>ایف آر-03اے فیڈر روٹ</h3><p>سی ڈی اے کے شائع شدہ روٹ میں پی آئی ایم ایس ہسپتال/پی آئی ایم ایس میٹرو اسٹیشن سے فیصل مسجد تک براہِ راست فیڈر رابطہ شامل ہے۔ شائع شدہ نظام الاوقات میں گاڑیوں کے درمیان اوسطاً تقریباً 10 منٹ کا وقفہ درج ہے، مگر عملی فریکوئنسی بدل سکتی ہے۔</p><p class="micro">روانگی سے پہلے کیپٹل ماس ٹرانزٹ کی تازہ معلومات چیک کریں۔</p></article>
+        <article class="transport-card card"><span class="route-badge">ٹیکسی / رائیڈ</span><h3>شہر کے اندر سے</h3><p>ڈرائیور کو “فیصل مسجد، شاہ فیصل ایونیو، E-8” بتائیں۔ اترنے کا مقام سکیورٹی انتظام کے مطابق مرکزی دروازے سے کچھ فاصلے پر ہو سکتا ہے۔ جمعہ کی نماز سے پہلے/بعد زیادہ طلب اور ٹریفک کے دباؤ کا امکان زیادہ ہے۔</p></article>
+        <article class="transport-card card"><span class="route-badge">نجی گاڑی</span><h3>شاہ فیصل ایونیو کے ذریعے</h3><p>مرکزی رسائی شاہ فیصل ایونیو ہے۔ پارکنگ کی سمت بتانے والے اشاروں اور سکیورٹی عملے کی ہدایات پر عمل کریں؛ بڑی جماعتوں میں بعض داخلی راستے یک طرفہ یا عارضی طور پر محدود ہو سکتے ہیں۔</p></article>
+        <article class="transport-card card"><span class="route-badge">پیدل / سائیکل</span><h3>قریبی سیکٹرز سے</h3><p>فاصلہ نقشے پر مختصر لگ سکتا ہے مگر چوڑی مرکزی سڑکوں، گرمی اور پیدل سڑک پار کرنے کی جگہوں کو ذہن میں رکھیں۔ سائیکل کو عبادت گاہ کے داخلی راستوں سے دور مناسب جگہ محفوظ کریں؛ موقع پر مخصوص سائیکل پارکنگ کی ضمانت نہیں دی جا سکتی۔</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="map" class="section section-white map-section">
+    <div class="container map-grid">
+      <div>
+        <SectionHeading eyebrow="مقام" title="مارگلہ کے دامن میں، سیکٹر E-8" lead="نقشہ اردو/پاکستان مقامی زبان اور خطے کی ترتیب کے ساتھ شامل ہے۔ راستہ شروع کرنے سے پہلے تازہ ٹریفک اور کسی عارضی سکیورٹی بندش کو دوبارہ دیکھیں۔" />
+        <div class="address-card">
+          <small>پتہ</small><strong>{siteMeta.address}</strong>
+          <small>تقریبی جغرافیائی نقاط</small><strong>{siteMeta.latitude}, {siteMeta.longitude}</strong>
+        </div>
+      </div>
+      <div class="map-frame">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5910.524596272336!2d73.03464407734857!3d33.72992217328024!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbefce01e6917%3A0x3e66e0de3e2598c0!2z6LS56JCo5bCU5riF55yf5a-6!5e1!3m2!1sur!2spk!4v1787566007308!5m2!1sur!2spk" width="600" height="450" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="فیصل مسجد کا گوگل نقشہ"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section class="section food">
+    <div class="container food-grid">
+      <div class="food-copy">
+        <SectionHeading eyebrow="قریبی خوراک" title="نام نہیں، ضرورت کے مطابق قسم منتخب کریں" lead="غیر تجارتی رہنما ہونے کی وجہ سے ہم کسی مخصوص ریستوران یا دکان کی سفارش نہیں کرتے۔" />
+        <p>مسجد کے قریب اور F-7 / F-8 جیسے شہری تجارتی علاقوں میں مختلف بجٹ اور ضرورت کے مطابق خوراک ملتی ہے۔ مذہبی مقام کے اندر تفریحی کھانا یا کھانے کے بجائے قریبی شہری تجارتی علاقے استعمال کرنا بہتر ہے۔</p>
+        <div class="food-tags"><span>پاکستانی روایتی کھانا</span><span>چائے اور ہلکی ہلکی خوراک و مشروبات</span><span>بیکری / ناشتا</span><span>خاندانی کھانا</span><span>سبزی خور اختیارات</span><span>سہولت اسٹور</span></div>
+      </div>
+      <figure>
+        <img src={photos.dusk.src} alt={photos.dusk.alt} width="1280" height="853" loading="lazy" />
+        <figcaption><a href={photos.dusk.source} target="_blank" rel="noopener noreferrer">{photos.dusk.credit}</a></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section section-dark nearby">
+    <div class="container">
+      <SectionHeading eyebrow="آس پاس کیا دیکھیں" title="اسلام آباد کو ایک ہی نشان تک محدود نہ کریں" lead="یہ مقامات عوامی ثقافتی/قدرتی دلچسپی کے مقامات ہیں، تجارتی سفارش نہیں۔ فاصلے اور کھلے ہونے کی حالت سفر کے دن نقشے اور متعلقہ سرکاری معلومات سے چیک کریں۔" />
+      <div class="nearby-grid">
+        {nearby.map(([name, desc], index) => <article><span>{String(index + 1).padStart(2,'0')}</span><h3>{name}</h3><p>{desc}</p></article>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section visual-story">
+    <div class="container">
+      <SectionHeading eyebrow="بصری مطالعہ" title="باہر کی جیومیٹری، اندر کی خاموشی" lead="حقیقی تصاویر کو صرف آرائش کے بجائے عمارت کی فضائی ساخت اور بصری کردار کو سمجھانے کے لیے استعمال کیا گیا ہے۔" />
+      <div class="photo-grid">
+        <figure class="photo-large"><img src={photos.interior.src} alt={photos.interior.alt} width="1280" height="853" loading="lazy" /><figcaption><a href={photos.interior.source} target="_blank" rel="noopener noreferrer">{photos.interior.credit}</a></figcaption></figure>
+        <figure><img src={photos.night.src} alt={photos.night.alt} width="1280" height="853" loading="lazy" /><figcaption><a href={photos.night.source} target="_blank" rel="noopener noreferrer">{photos.night.credit}</a></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="section section-white faq">
+    <div class="container faq-layout">
+      <div class="faq-side"><SectionHeading eyebrow="عام سوالات" title="جانے سے پہلے مختصر جواب" lead="اہم اور بدلنے والی معلومات کو قطعی ضمانت کے بجائے عملی رہنمائی کے طور پر پڑھیں۔" /></div>
+      <div class="faq-list">
+        {faqItems.map((item, index) => (
+          <details open={index === 0}>
+            <summary>{item.q}<span aria-hidden="true">＋</span></summary>
+            <p>{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="sources" class="section sources">
+    <div class="container sources-grid">
+      <div>
+        <SectionHeading eyebrow="تحقیقی شفافیت" title="ہم معلومات کیسے تیار کرتے ہیں" lead="یہ ایک آزاد، غیر منافع بخش معلوماتی منصوبہ ہے۔ مقصد سرکاری مواد، معتبر تحقیقی حوالوں اور عملی visitor information کو ایک جگہ واضح کرنا ہے۔" />
+      </div>
+      <div class="source-cards">
+        <article><h3>سرکاری اور عوامی مواد</h3><p>کیپٹل ڈویلپمنٹ اتھارٹی، اسلام آباد کیپیٹل ٹیریٹری انتظامیہ، پاکستان ٹورزم ڈویلپمنٹ کارپوریشن، قومی اسمبلی کے عوامی ریکارڈ اور کیپٹل ماس ٹرانزٹ کے شائع شدہ routes کو ترجیح دی گئی ہے۔</p></article>
+        <article><h3>تاریخ اور معماری</h3><p>آئی کوموس کے بیسویں صدی سے متعلق موضوعاتی مواد اور ڈیزائن مقابلے کے تحقیقی و آرکائیول حوالوں سے ویدات دالوکے، مقابلہ، تعمیر اور معماری کے تصور کی باہمی تصدیق کی گئی ہے۔</p></article>
+        <article><h3>بدلنے والی معلومات</h3><p>گوگل نقشہ جات جیسی عوامی فہرست سے پتہ، عمومی اوقات اور مجموعی درجہ بندی کے اشاریے لیے جا سکتے ہیں، لیکن یہ اقدار تبدیل ہوتی رہتی ہیں؛ سفر کے دن تازہ تصدیق ضروری ہے۔</p></article>
+        <article><h3>کوئی تجارتی درجہ بندی نہیں</h3><p>کھانے، رہائش، خریداری، ایندھن یا برقی چارجنگ کے لیے مخصوص کاروبار کے نام یا الحاقی روابط شامل نہیں کیے گئے۔ صرف سہولت کی اقسام اور شہری علاقے بیان کیے گئے ہیں۔</p></article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+.hero { min-height: 760px; position: relative; display:flex; align-items:flex-end; overflow:hidden; background:#10241f; color:white; }
+.hero-photo { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 47%; }
+.hero-shade { position:absolute; inset:0; background:linear-gradient(90deg,rgba(4,18,14,.2),rgba(4,18,14,.62) 48%,rgba(4,18,14,.88)),linear-gradient(0deg,rgba(4,18,14,.75),transparent 50%); }
+.hero-lines { position:absolute; inset:0; pointer-events:none; opacity:.55; }
+.hero-lines i { position:absolute; bottom:-260px; width:1px; height:850px; background:linear-gradient(transparent,rgba(216,188,123,.6)); transform-origin:bottom; }
+.hero-lines i:nth-child(1){right:18%;transform:rotate(27deg)}.hero-lines i:nth-child(2){right:33%;transform:rotate(12deg)}.hero-lines i:nth-child(3){right:46%;transform:rotate(-12deg)}.hero-lines i:nth-child(4){right:60%;transform:rotate(-27deg)}
+.hero-content { position:relative; z-index:2; padding-bottom:54px; display:grid; grid-template-columns:1.3fr .7fr; gap:46px; align-items:end; }
+.hero-copy { max-width:760px; }
+.hero-kicker { display:flex; gap:8px; flex-wrap:wrap; }
+.hero-kicker span { padding:6px 12px; border:1px solid rgba(255,255,255,.3); border-radius:999px; font-size:.78rem; background:rgba(0,0,0,.18); }
+h1 { font-size:clamp(4rem,10vw,8.4rem); line-height:.95; letter-spacing:-.07em; margin:24px 0 22px; text-shadow:0 5px 26px rgba(0,0,0,.25); }
+.hero-sub { max-width:720px; color:#e5eee9; font-size:1.15rem; margin:0; line-height:1.85; }
+.hero-actions { display:flex; gap:10px; margin-top:28px; flex-wrap:wrap; }
+.hero-facts { color:#10241f; padding:8px 22px; background:rgba(255,253,248,.92); backdrop-filter:blur(14px); box-shadow:0 20px 50px rgba(0,0,0,.18); }
+.hero-facts div { padding:14px 0; border-bottom:1px solid rgba(16,36,31,.12); display:grid; grid-template-columns:90px 1fr; align-items:center; gap:8px; }
+.hero-facts div:last-child{border:0}.hero-facts small{color:#738078;font-size:.74rem}.hero-facts strong{font-size:.95rem}.hero-facts span{grid-column:2;color:#75837d;font-size:.66rem;line-height:1.3}
+.photo-credit { position:absolute; left:16px; bottom:14px; color:rgba(255,255,255,.7); font-size:.68rem; text-decoration:none; }
+.quickbar { background:#0b211c; color:#eaf1ed; border-top:1px solid rgba(255,255,255,.1); }
+.quick-grid { display:grid; grid-template-columns:repeat(4,1fr); }
+.quick-grid>div { min-height:100px; padding:20px 18px; display:flex; align-items:center; gap:13px; border-inline-start:1px solid rgba(255,255,255,.1); }.quick-grid>div:first-child{border-inline-start:0}
+.quick-grid>div>span{color:#d8bc7b;font-size:1.4rem}.quick-grid p{display:grid;margin:0;line-height:1.55}.quick-grid strong{font-size:.9rem}.quick-grid small{color:#9fb1a8;font-size:.73rem}
+.intro-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }.intro-copy p{color:#425951;margin:0 0 20px;font-size:1.04rem}.intro .section-title{max-width:560px}
+.history .heading-wrap { max-width:850px; }.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);margin-top:48px}.timeline article{background:#102820;padding:30px;min-height:320px}.timeline span{font-size:2.6rem;color:#d8bc7b;font-weight:800}.timeline h3{font-size:1.2rem;margin:12px 0}.timeline p{color:#b8c8c0;font-size:.88rem;line-height:1.8}.history-note{margin-top:28px;padding:22px 26px;border:1px solid rgba(216,188,123,.35);border-radius:18px;display:grid;grid-template-columns:150px 1fr;gap:20px;background:rgba(216,188,123,.07)}.history-note strong{color:#d8bc7b}.history-note p{margin:0;color:#c8d5cf;font-size:.9rem}
+.architecture-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:68px;align-items:start}.arch-image{position:sticky;top:110px}.arch-image img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:28px;box-shadow:var(--shadow)}.arch-image a,.photo-grid a,.food figure a{display:block;color:#6e7f78;font-size:.66rem;margin-top:8px}.arch-points{margin-top:32px}.arch-points article{display:grid;grid-template-columns:50px 1fr;gap:18px;padding:22px 0;border-top:1px solid var(--line)}.arch-points b{color:#a57d38}.arch-points h3{margin:0 0 6px;font-size:1.1rem}.arch-points p{margin:0;color:#566c64;font-size:.9rem}
+.etiquette-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:38px}.etiquette-grid article{padding:28px;border:1px solid var(--line);border-radius:22px;background:white}.etiquette-grid span{font-size:.74rem;color:#9a7639}.etiquette-grid h3{margin:34px 0 8px;font-size:1.12rem}.etiquette-grid p{margin:0;color:#5b6e67;font-size:.88rem}
+.visit-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:38px}.visit-card{padding:28px;border:1px solid var(--line);border-radius:24px;background:#fffdf8}.visit-card.featured{background:#d8bc7b;border-color:#d8bc7b}.visit-card small{display:block;color:#697970;font-size:.75rem}.visit-card.featured small{color:#4d452d}.visit-card strong{display:block;font-size:2rem;line-height:1.2;margin:18px 0 12px}.visit-card p{margin:0;color:#53675f;font-size:.86rem}.visit-card.featured p{color:#39483e}.season-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px;padding-top:26px;border-top:1px solid var(--line)}.season-grid h3{margin:0 0 4px;font-size:1rem}.season-grid p{margin:0;color:#607169;font-size:.85rem}
+.facility-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:38px}.facility-grid article{padding:24px;border-radius:20px;background:#143027;border:1px solid rgba(255,255,255,.1);min-height:245px}.facility-grid span{font-size:.75rem;color:#d8bc7b}.facility-grid h3{margin:36px 0 8px;font-size:1.08rem}.facility-grid p{margin:0;color:#b7c7bf;font-size:.84rem;line-height:1.82}
+.transport-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:38px}.transport-main{grid-column:span 2;padding:34px;background:#10241f;color:white}.transport-main h3{font-size:1.7rem;margin:16px 0 10px}.transport-main p{color:#c9d7d0;max-width:930px}.transport-card{padding:28px}.transport-card h3{margin:14px 0 8px;font-size:1.2rem}.transport-card p{margin:0;color:#53685f;font-size:.9rem}.transport-card .micro{margin-top:12px;color:#8a6a30;font-size:.77rem}.route-badge{display:inline-flex;padding:5px 10px;border-radius:999px;background:#d8bc7b;color:#17251f;font-size:.72rem;font-weight:800}
+.map-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:42px;align-items:center}.address-card{margin-top:28px;padding:24px;border:1px solid var(--line);border-radius:20px;background:white;display:grid;gap:5px}.address-card small{color:#7c8a84;font-size:.72rem;margin-top:6px}.address-card strong{font-size:.95rem}.map-frame{border-radius:26px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);min-height:480px}.map-frame iframe{display:block;width:100%;height:480px}
+.food-grid{display:grid;grid-template-columns:1fr .85fr;gap:54px;align-items:center}.food-copy>p{color:#52675f}.food-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}.food-tags span{padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:#fffdf8;font-size:.78rem}.food figure{margin:0}.food figure img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:28px;box-shadow:var(--shadow)}
+.nearby-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:38px}.nearby-grid article{padding:27px;border:1px solid rgba(255,255,255,.1);border-radius:22px;background:#143027}.nearby-grid span{color:#d8bc7b;font-size:.72rem}.nearby-grid h3{margin:28px 0 7px}.nearby-grid p{margin:0;color:#b9c9c1;font-size:.86rem}
+.photo-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:18px;margin-top:38px}.photo-grid figure{margin:0}.photo-grid img{width:100%;height:500px;object-fit:cover;border-radius:24px}.photo-grid .photo-large img{object-position:center}
+.faq-layout{display:grid;grid-template-columns:.7fr 1.3fr;gap:70px}.faq-side{position:sticky;top:110px;align-self:start}.faq-list details{border-top:1px solid var(--line);padding:0}.faq-list details:last-child{border-bottom:1px solid var(--line)}.faq-list summary{cursor:pointer;list-style:none;padding:21px 0;display:flex;justify-content:space-between;gap:16px;font-weight:800}.faq-list summary::-webkit-details-marker{display:none}.faq-list summary span{color:#a47b34;font-size:1.25rem}.faq-list details[open] summary span{transform:rotate(45deg)}.faq-list p{margin:-5px 0 24px;color:#53675f;font-size:.92rem;max-width:740px}
+.sources-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:56px}.source-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.source-cards article{padding:24px;border:1px solid var(--line);border-radius:20px;background:#fffdf8}.source-cards h3{margin:0 0 6px;font-size:1rem}.source-cards p{margin:0;color:#566b63;font-size:.84rem}
+@media(max-width:1000px){.hero-content{grid-template-columns:1fr}.hero-facts{display:grid;grid-template-columns:repeat(2,1fr)}.hero-facts div{display:block}.hero-facts span{display:block}.timeline{grid-template-columns:repeat(2,1fr)}.architecture-grid{grid-template-columns:1fr}.arch-image{position:static}.arch-image img{aspect-ratio:16/9}.etiquette-grid,.visit-cards,.facility-grid{grid-template-columns:repeat(2,1fr)}.map-grid,.food-grid,.faq-layout,.sources-grid{grid-template-columns:1fr}.faq-side{position:static}.nearby-grid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:720px){.hero{min-height:720px}.hero-content{padding-bottom:38px}.hero-facts{grid-template-columns:1fr 1fr;padding:6px 14px}.hero-facts div{padding:10px}.photo-credit{display:none}.quick-grid{grid-template-columns:repeat(2,1fr)}.quick-grid>div:nth-child(3){border-top:1px solid rgba(255,255,255,.1)}.quick-grid>div:nth-child(4){border-top:1px solid rgba(255,255,255,.1)}.intro-grid{grid-template-columns:1fr;gap:26px}.timeline,.etiquette-grid,.visit-cards,.facility-grid,.transport-grid,.nearby-grid,.source-cards{grid-template-columns:1fr}.transport-main{grid-column:auto}.history-note{grid-template-columns:1fr}.season-grid{grid-template-columns:1fr}.photo-grid{grid-template-columns:1fr}.photo-grid img{height:330px}.map-frame,.map-frame iframe{min-height:380px;height:380px}.nearby-grid{grid-template-columns:1fr}h1{font-size:clamp(4rem,22vw,6.5rem)}}
+</style>

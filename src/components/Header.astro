@@ -1,0 +1,41 @@
+---
+const { compact = false } = Astro.props;
+---
+<header class:list={["site-header", { compact }]}>
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="فیصل مسجد رہنما — ہوم">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#0b211c" />
+        <path d="M14 51V14M50 51V14" stroke="#d8bc7b" stroke-width="3.5" stroke-linecap="round" />
+        <path d="M18 50 32 21l14 29Z" fill="#f4efe2" stroke="#d8bc7b" stroke-width="2.5" stroke-linejoin="round" />
+        <path d="M11 52h42" stroke="#7a9b8c" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+      <span><strong>فیصل مسجد</strong><small>آزاد معلوماتی رہنما</small></span>
+    </a>
+    <nav aria-label="مرکزی نیویگیشن">
+      <a href="/#history">تاریخ</a>
+      <a href="/#architecture">معماری</a>
+      <a href="/#visit">دورہ</a>
+      <a href="/#transport">رسائی</a>
+      <a href="/#facilities">سہولیات</a>
+      <a href="/#faq">سوالات</a>
+    </nav>
+    <a class="header-cta" href="/#map">نقشہ دیکھیں</a>
+  </div>
+</header>
+
+<style>
+.site-header { position: sticky; top: 0; z-index: 50; background: rgba(251,248,239,.92); border-bottom: 1px solid rgba(16,36,31,.1); backdrop-filter: blur(14px); }
+.header-inner { min-height: 76px; display: flex; align-items: center; gap: 24px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; min-width: 230px; }
+.brand svg { width: 45px; height: 45px; flex: 0 0 auto; }
+.brand span { display: grid; line-height: 1.28; }
+.brand strong { font-size: 1rem; }
+.brand small { color: #65776f; font-size: .72rem; }
+nav { display: flex; align-items: center; gap: clamp(10px, 2vw, 24px); margin-inline-start: auto; }
+nav a { color: #334c44; text-decoration: none; font-size: .9rem; font-weight: 700; white-space: nowrap; }
+nav a:hover { color: #8a682d; }
+.header-cta { text-decoration: none; color: white; background: #0b211c; border-radius: 999px; padding: 9px 16px; font-weight: 800; font-size: .86rem; white-space: nowrap; }
+@media (max-width: 950px) { nav { display: none; } .header-cta { margin-inline-start: auto; } }
+@media (max-width: 480px) { .brand { min-width: 0; } .brand small { display: none; } .header-cta { display: none; } }
+</style>

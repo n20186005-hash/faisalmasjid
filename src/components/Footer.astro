@@ -1,0 +1,47 @@
+---
+import { sourceLinks } from '../data/site';
+---
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <img src="/logo.svg" alt="فیصل مسجد رہنما" width="260" height="75" />
+      <p>یہ ویب سائٹ ایک آزاد، غیر منافع بخش سیاحتی معلوماتی رہنما منصوبہ ہے اور کسی سرکاری ادارے، مسجد انتظامیہ یا سرکاری تنظیم سے منسلک نہیں۔</p>
+    </div>
+    <div>
+      <h2>معلوماتی اصول</h2>
+      <p>اس ویب سائٹ کی معلومات کو اسلام آباد کیپٹل ڈویلپمنٹ اتھارٹی، اسلام آباد کیپیٹل ٹیریٹری انتظامیہ اور پاکستان ٹورزم ڈویلپمنٹ کارپوریشن کے دستیاب عوامی مواد سمیت معتبر ذرائع سے تقابل کیا گیا ہے۔ کوئی تجارتی سفارش شامل نہیں۔</p>
+    </div>
+    <div>
+      <h2>اہم صفحات</h2>
+      <ul>
+        <li><a href="/privacy/">رازداری کی پالیسی</a></li>
+        <li><a href="/terms/">استعمال کی شرائط</a></li>
+        <li><a href="/cookies/">کوکی ترتیبات</a></li>
+        <li><a href="/#sources">حوالہ جاتی ماخذ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container source-row" aria-label="عوامی ماخذ">
+    {sourceLinks.map((source) => <a href={source.href} target="_blank" rel="noopener noreferrer">{source.label}</a>)}
+  </div>
+  <div class="container footer-bottom">
+    <p>تصویری حقوق: اس ویب سائٹ پر دکھائی جانے والی تمام تصاویر کے حقوق ان کے اصل فوٹوگرافرز کے پاس ہیں؛ استعمال متعلقہ آزاد اجازت ناموں کے تحت ہے۔</p>
+    <p>© 2026 فیصل مسجد رہنما۔ جملہ حقوق محفوظ ہیں۔</p>
+  </div>
+</footer>
+
+<style>
+.footer { background:#091b17; color:#dce7e1; padding:64px 0 24px; }
+.footer-grid { display:grid; grid-template-columns:1.25fr 1.2fr .75fr; gap:48px; }
+.footer-brand img { width:260px; height:auto; border-radius:14px; }
+h2 { color:#f4efe2; font-size:1.05rem; margin:0 0 12px; }
+p { color:#afc0b8; margin:0; font-size:.9rem; line-height:1.9; }
+ul { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+li a { color:#dce7e1; text-decoration:none; font-size:.9rem; }
+li a:hover { color:#d8bc7b; }
+.source-row { border-top:1px solid rgba(255,255,255,.1); margin-top:38px; padding-top:24px; display:flex; flex-wrap:wrap; gap:10px 24px; }
+.source-row a { color:#a9bbb2; font-size:.8rem; text-underline-offset:4px; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,.1); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; gap:24px; }
+.footer-bottom p { font-size:.78rem; }
+@media(max-width:850px){ .footer-grid{grid-template-columns:1fr;gap:28px}.footer-bottom{flex-direction:column}.source-row{display:grid} }
+</style>
