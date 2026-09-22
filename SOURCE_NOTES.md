@@ -10,6 +10,17 @@
 - Google Maps public listing: پتہ، عمومی اوقات اور aggregate visitor rating؛ سفر سے پہلے تازہ معلومات دوبارہ چیک کرنا ضروری ہے۔
 - Wikimedia Commons: حقیقی تصاویر اور لائسنس کی تفصیل (ATTRIBUTION.md دیکھیں)۔
 
+## براہِ راست عوامی روابط (صفحہ کے "حوالہ جاتی ماخذ" حصے میں بھی شامل)
+
+- Capital Development Authority: https://www.cda.gov.pk/
+- Capital Mass Transit (FR-03A روٹ معلومات): https://www.cda.gov.pk/metro
+- Pakistan Tourism Development Corporation: https://tourism.gov.pk/
+- National Assembly of Pakistan: https://na.gov.pk/
+- Wikipedia — Faisal Mosque: https://en.wikipedia.org/wiki/Faisal_Mosque
+- Google Maps (عوامی فہرست): https://maps.app.goo.gl/wE3fcsHKGqjRnXiu5
+
+زائرین کی درجہ بندی 4.7 / 5 اور تبصروں کی تعداد 74,289 ستمبر 2026 کی عوامی فہرست سے مطابقت رکھتی ہے؛ یہ اقدار بدل سکتی ہیں۔
+
 ## ادارتی اصول
 
 - تجارتی دکان/ہوٹل/ریستوران کا نام بطور سفارش شامل نہیں کیا گیا۔

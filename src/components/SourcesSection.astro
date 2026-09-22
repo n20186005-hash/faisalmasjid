@@ -1,0 +1,54 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { govtTourismUrl, siteMeta, sources } from '../data/site';
+
+const updated = 'ستمبر 2026';
+---
+<section id="references" class="section section-white references">
+  <div class="container">
+    <SectionHeading
+      eyebrow="حوالہ جاتی ماخذ"
+      title="سرکاری اور معتبر ذرائع — براہِ راست روابط"
+      latin="Sources & official references for Faisal Masjid, Islamabad"
+      lead="یہ صفحہ کسی سرکاری ادارے یا مسجد انتظامیہ کا نمائندہ نہیں۔ ہر عملی معلومات کو درج ذیل عوامی اور قابلِ تصدیق ذرائع سے تقابل کے بعد پیش کیا گیا ہے۔"
+    />
+    <div class="source-list">
+      {sources.map((source) => (
+        <article class="source-item">
+          <h3>
+            <a href={source.href} target="_blank" rel="noopener noreferrer">{source.label}</a>
+          </h3>
+          <p>{source.note}</p>
+          <code dir="ltr" lang="en">{source.href.replace(/^https:\/\//, '')}</code>
+        </article>
+      ))}
+    </div>
+    <div class="reference-notes">
+      <p>
+        سرکاری اپ ڈیٹس اور علاقائی سیاحتی معلومات کے لیے
+        <a href={govtTourismUrl} target="_blank" rel="noopener noreferrer">پاکستان ٹورزم ڈویلپمنٹ کارپوریشن کا سرکاری پورٹل</a>
+        اور اسلام آباد کی <a href="https://www.cda.gov.pk/" target="_blank" rel="noopener noreferrer">کیپٹل ڈویلپمنٹ اتھارٹی</a> کی ویب سائٹ دیکھیں۔
+      </p>
+      <p>
+        گوگل کی عوامی فہرست میں درج زائرین کی درجہ بندی {siteMeta.rating} / 5 اور تبصروں کی تعداد تقریباً {siteMeta.reviewCount.toLocaleString('en-US')} ہے (ستمبر 2026 کی مطابقت)؛ یہ اقدار تبدیل ہوتی رہتی ہیں، اس لیے سفر کے دن تازہ تصدیق کریں۔
+      </p>
+      <p class="micro">آخری ادارتی جائزہ: {updated}۔ فون نمبر، رسائی، نماز کے اوقات اور سکیورٹی انتظامات بغیر پیشگی اطلاع کے بدل سکتے ہیں۔</p>
+    </div>
+  </div>
+</section>
+
+<style>
+.source-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 38px; }
+.source-item { padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: #fffdf8; min-height: 210px; display: grid; align-content: start; }
+.source-item h3 { margin: 0 0 8px; font-size: 1rem; }
+.source-item h3 a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+.source-item h3 a:hover { color: #8a682d; }
+.source-item p { margin: 0; color: #566b63; font-size: .85rem; line-height: 1.85; }
+.source-item code { margin-top: 12px; color: #7d8b85; font-size: .72rem; direction: ltr; text-align: left; word-break: break-all; }
+.reference-notes { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.reference-notes p { margin: 0; color: #4d625b; font-size: .92rem; }
+.reference-notes a { color: #8a682d; text-underline-offset: 4px; }
+.reference-notes .micro { color: #6b7c75; font-size: .8rem; }
+@media (max-width: 1000px) { .source-list { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 720px) { .source-list { grid-template-columns: 1fr; } .source-item { min-height: 0; } }
+</style>

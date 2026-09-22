@@ -1,9 +1,21 @@
 ---
-interface Props { eyebrow: string; title: string; lead?: string; }
-const { eyebrow, title, lead } = Astro.props;
+interface Props { eyebrow: string; title: string; lead?: string; latin?: string; }
+const { eyebrow, title, lead, latin } = Astro.props;
 ---
 <div class="heading-wrap">
   <span class="eyebrow">{eyebrow}</span>
   <h2 class="section-title">{title}</h2>
+  {latin && <p class="heading-latin" lang="en" dir="ltr">{latin}</p>}
   {lead && <p class="section-lead">{lead}</p>}
 </div>
+
+<style>
+.heading-latin {
+  margin: 10px 0 0;
+  color: #8a6a30;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+.section-dark .heading-latin { color: #d8bc7b; }
+</style>

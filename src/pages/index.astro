@@ -1,29 +1,50 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import { photos, siteMeta } from '../data/site';
+import SourcesSection from '../components/SourcesSection.astro';
+import { govtTourismUrl, nearbyLandmarks, photos, siteMeta } from '../data/site';
 
 const pageUrl = Astro.site ? new URL('/', Astro.site).href : undefined;
+const attractionId = pageUrl ? `${pageUrl}#attraction` : undefined;
 const attractionJsonLd = {
   '@context': 'https://schema.org',
   '@type': ['TouristAttraction', 'Mosque'],
-  name: siteMeta.attractionName,
-  alternateName: siteMeta.alternateName,
-  description: 'اسلام آباد میں مارگلہ پہاڑیوں کے دامن میں واقع پاکستان کی قومی مسجد؛ جدید خیمہ نما فنِ تعمیر، چار مینار اور وسیع صحن اس کی شناخت ہیں۔',
+  ...(attractionId ? { '@id': attractionId } : {}),
+  name: siteMeta.latinName,
+  alternateName: [
+    siteMeta.attractionName,
+    siteMeta.alternateName,
+    siteMeta.officialName,
+    siteMeta.englishName,
+    `${siteMeta.cityLatin} ${siteMeta.latinName}`,
+    `${siteMeta.city} ${siteMeta.attractionName}`,
+  ],
+  description:
+    'اسلام آباد، اسلام آباد کیپیٹل ٹیریٹری، پاکستان میں مارگلہ پہاڑیوں کے دامن واقع پاکستان کی قومی مسجد۔ Comprehensive visitor guide to Faisal Masjid (Shah Faisal Mosque) in Islamabad, Islamabad Capital Territory, Pakistan.',
   ...(pageUrl ? { url: pageUrl } : {}),
+  image: [photos.hero.src, photos.courtyard.src, photos.night.src],
+  isAccessibleForFree: true,
+  telephone: siteMeta.phone,
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Shah Faisal Ave, E-8',
-    addressLocality: 'Islamabad',
-    postalCode: '44000',
-    addressCountry: 'PK',
+    streetAddress: siteMeta.streetAddress,
+    addressLocality: siteMeta.cityLatin,
+    addressRegion: siteMeta.regionLatin,
+    postalCode: siteMeta.postalCode,
+    addressCountry: siteMeta.countryCode,
   },
   geo: {
     '@type': 'GeoCoordinates',
     latitude: siteMeta.latitude,
     longitude: siteMeta.longitude,
   },
-  isAccessibleForFree: true,
+  hasMap: siteMeta.mapsShareUrl,
+  sameAs: [siteMeta.mapsShareUrl, govtTourismUrl, 'https://en.wikipedia.org/wiki/Faisal_Mosque'],
+  containedInPlace: {
+    '@type': 'AdministrativeArea',
+    name: siteMeta.regionLatin,
+    containedInPlace: { '@type': 'Country', name: siteMeta.countryLatin },
+  },
   openingHoursSpecification: [{
     '@type': 'OpeningHoursSpecification',
     dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
@@ -36,7 +57,6 @@ const attractionJsonLd = {
     reviewCount: siteMeta.reviewCount,
     bestRating: 5,
   },
-  image: [photos.hero.src, photos.courtyard.src, photos.night.src],
 };
 
 const faqItems = [
@@ -48,6 +68,8 @@ const faqItems = [
   { q: 'کیا پارکنگ اور بیت الخلا موجود ہیں؟', a: 'مسجد کے احاطے اور قریب پارکنگ کی جگہیں اور وضو/بیت الخلا کی سہولیات موجود رہتی ہیں، مگر جمعہ، رمضان اور بڑے اجتماعات میں گنجائش اور رسائی بدل سکتی ہے۔ صفائی اور کھلے حصوں کی حالت بھی وقت کے ساتھ مختلف ہو سکتی ہے۔' },
   { q: 'پبلک ٹرانسپورٹ سے کیسے پہنچیں؟', a: 'سی ڈی اے کے شائع شدہ فیڈر روٹ FR-03A میں پی آئی ایم ایس ہسپتال/میٹرو اسٹیشن اور فیصل مسجد شامل ہیں۔ روٹ اور فریکوئنسی میں تبدیلی ممکن ہے، اس لیے روانگی سے پہلے سرکاری کیپٹل ماس ٹرانزٹ معلومات یا ایپ سے تازہ شیڈول دیکھیں۔' },
   { q: 'کیا مسجد میں فوٹوگرافی کی اجازت ہے؟', a: 'بیرونی فنِ تعمیر کی فوٹوگرافی عام سیاحتی سرگرمی ہے، مگر عبادت کرنے والوں کی پرائیویسی، سکیورٹی نشان دہی اور موقع پر موجود ہدایات کا احترام کریں۔ اندرونی حصوں میں فلیش، ٹرائی پوڈ یا مخصوص زاویوں پر پابندی ہو سکتی ہے۔' },
+  { q: 'فیصل مسجد کا مکمل پتہ، پلس کوڈ اور رابطہ نمبر کیا ہے؟', a: `پتہ: شاہ فیصل ایونیو، سیکٹر E-8، اسلام آباد 44000، پاکستان۔ گوگل پلس کوڈ: ${siteMeta.plusCode}۔ عوامی فہرست میں درج رابطہ نمبر: ${siteMeta.phone}۔ نقاط برائے راستہ: ${siteMeta.latitude}, ${siteMeta.longitude}۔` },
+  { q: 'کیا فیصل مسجد شام یا رات کے وقت بھی دیکھی جا سکتی ہے؟', a: 'غروبِ آفتاب اور رات کی روشنی میں مسجد کا سفید خیمہ نما خاکہ اور چار مینار خاص طور پر نمایاں ہوتے ہیں۔ تاہم عصر، مغرب اور عشاء کی نماز کے اوقات اور سکیورٹی انتظامات کے مطابق کھلے حصوں تک رسائی بدل سکتی ہے؛ رات کے دورے سے پہلے مقامی ٹریفک اور روشنی کا خیال رکھیں۔' },
 ];
 const faqJsonLd = {
   '@context': 'https://schema.org',
@@ -80,9 +102,10 @@ const nearby = [
 ];
 ---
 <BaseLayout
-  title="فیصل مسجد اسلام آباد — تاریخ، فنِ تعمیر، رسائی اور مکمل سیاحتی رہنما"
-  description="فیصل مسجد اسلام آباد کا آزاد غیر منافع بخش اردو رہنما: تاریخ، معماری، آداب، مفت داخلہ، پبلک ٹرانسپورٹ، ائیرپورٹ رسائی، پارکنگ، سہولیات، نقشہ اور عام سوالات۔"
+  title="فیصل مسجد اسلام آباد — تاریخ، فنِ تعمیر، مقام اور مکمل سیاحتی رہنما"
+  description={`فیصل مسجد (Faisal Masjid / Shah Faisal Mosque) اسلام آباد کا آزاد غیر منافع بخش اردو سیاحتی رہنما: مقام اور نقشہ، مفت داخلہ، نماز کے آداب، پبلک ٹرانسپورٹ، ائیرپورٹ رسائی، پارکنگ، سہولیات، قریبی ${nearbyLandmarks.primary} اور ${nearbyLandmarks.secondary}، تاریخ اور عام سوالات۔`}
   ogImage={photos.hero.src}
+  ogImageAlt="فیصل مسجد (Faisal Masjid)، اسلام آباد — مارگلہ پہاڑیوں کے سامنے سفید خیمہ نما مرکزی ہال اور چار مینار"
   jsonLd={[attractionJsonLd, faqJsonLd]}
 >
   <section class="hero">
@@ -92,8 +115,9 @@ const nearby = [
     <div class="container hero-content">
       <div class="hero-copy">
         <div class="hero-kicker"><span>اسلام آباد کی قومی مسجد</span><span>مارگلہ پہاڑیوں کا دامن</span></div>
-        <h1>فیصل مسجد</h1>
+        <h1>فیصل مسجد<span class="h1-city">اسلام آباد، پاکستان</span></h1>
         <p class="hero-sub">روایتی گنبد کے بجائے ایک عظیم خیمہ نما چھت، چار باریک مینار اور پہاڑوں کے سامنے سفید جیومیٹری — پاکستان کی جدید قومی شناخت کا ایک غیر معمولی تعمیراتی باب۔</p>
+        <p class="hero-entity"><strong>فیصل مسجد</strong> یعنی <span lang="en" dir="ltr">Faisal Masjid (Shah Faisal Mosque)</span> اسلام آباد، اسلام آباد کیپیٹل ٹیریٹری، پاکستان کی قومی مسجد اور ایک فعال عبادت گاہ ہے۔</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#visit">دورہ ترتیب دیں <span aria-hidden="true">←</span></a>
           <a class="button button-ghost" href="#history">تاریخ پڑھیں</a>
@@ -103,9 +127,26 @@ const nearby = [
         <div><small>مقام</small><strong>شاہ فیصل ایونیو، E-8</strong></div>
         <div><small>داخلہ</small><strong>عمومی طور پر مفت</strong></div>
         <div><small>موزوں مدت</small><strong>60–90 منٹ</strong></div>
-        <div><small>عوامی درجہ بندی</small><strong>{siteMeta.rating} / 5</strong><span>درجہ بندی بدل سکتی ہے</span></div>
+        <div><small>عوامی درجہ بندی</small><strong>{siteMeta.rating} / 5</strong><span>{siteMeta.reviewCount.toLocaleString('en-US')} تبصرے (ستمبر 2026) · درجہ بندی بدل سکتی ہے</span></div>
       </div>
       <a class="photo-credit" href={photos.hero.source} target="_blank" rel="noopener noreferrer">تصویر: {photos.hero.credit}</a>
+    </div>
+  </section>
+
+  <section class="entity-strip" aria-label="مقام کی شناخت اور جغرافیائی تدرج">
+    <div class="container entity-inner">
+      <nav class="entity-crumbs" aria-label="جغرافیائی تدرج">
+        <span>{siteMeta.country}</span><span aria-hidden="true">›</span>
+        <span>{siteMeta.region}</span><span aria-hidden="true">›</span>
+        <span>{siteMeta.city}</span><span aria-hidden="true">›</span>
+        <strong>{siteMeta.attractionName}</strong>
+      </nav>
+      <div class="entity-facts">
+        <div><small>شہر / وفاقی علاقہ</small><strong>{siteMeta.city}، {siteMeta.region}</strong></div>
+        <div><small>پوسٹل کوڈ</small><strong dir="ltr">{siteMeta.postalCode}</strong></div>
+        <div><small>رابطہ نمبر</small><strong><a href={siteMeta.phoneHref} dir="ltr">{siteMeta.phone}</a></strong></div>
+        <div><small>پلس کوڈ</small><strong dir="ltr">P2HP+XV</strong></div>
+      </div>
     </div>
   </section>
 
@@ -121,8 +162,12 @@ const nearby = [
   <section class="section intro mosque-motif">
     <div class="container intro-grid">
       <div>
-        <span class="eyebrow">جگہ کو سمجھیں</span>
-        <h2 class="section-title">یہ صرف ایک تصویری نشان نہیں، ایک فعال عبادت گاہ بھی ہے</h2>
+        <SectionHeading
+          eyebrow="جگہ کو سمجھیں"
+          title="فیصل مسجد کے بارے میں — اسلام آباد کی فعال قومی مسجد"
+          latin="About Faisal Masjid (Shah Faisal Mosque), Islamabad"
+          lead="یہ صرف ایک تصویری نشان نہیں، ایک فعال عبادت گاہ بھی ہے۔"
+        />
       </div>
       <div class="intro-copy">
         <p>فیصل مسجد اسلام آباد کے شمالی کنارے پر مارگلہ پہاڑیوں کے دامن میں واقع ہے۔ اس کا کھلا سفید حجم، خیمہ نما مرکزی چھت اور چار مینار شہر کے منصوبہ بند افق کے مقابل ایک واضح علامت بناتے ہیں۔ عمارت کو سیاحتی مقام کے طور پر دیکھتے وقت یہ بنیادی بات اہم ہے کہ یہاں روزمرہ عبادت، جمعہ اور مذہبی اجتماعات ہوتے ہیں۔</p>
@@ -133,7 +178,7 @@ const nearby = [
 
   <section id="history" class="section section-dark history">
     <div class="container">
-      <SectionHeading eyebrow="تاریخی پس منظر" title="ایک بین الاقوامی مقابلے سے قومی مسجد تک" lead="فیصل مسجد کی کہانی ایک فرد یا ایک عطیے تک محدود نہیں؛ یہ بین الاقوامی ڈیزائن مقابلہ، پاکستانی ادارہ جاتی منصوبہ بندی، سعودی مالی تعاون اور کئی سال کی تعمیر کا مجموعہ ہے۔" />
+      <SectionHeading eyebrow="تاریخی پس منظر" title="فیصل مسجد کی تاریخ اور اہمیت — ایک بین الاقوامی مقابلے سے قومی مسجد تک" latin="History & significance of Faisal Masjid, Islamabad" lead="فیصل مسجد کی کہانی ایک فرد یا ایک عطیے تک محدود نہیں؛ یہ بین الاقوامی ڈیزائن مقابلہ، پاکستانی ادارہ جاتی منصوبہ بندی، سعودی مالی تعاون اور کئی سال کی تعمیر کا مجموعہ ہے۔" />
       <div class="timeline">
         <article><span>1969</span><h3>بین الاقوامی ڈیزائن مقابلہ</h3><p>کیپٹل ڈویلپمنٹ اتھارٹی اور پاکستانی تعمیراتی حلقوں کے زیرِ اہتمام مقابلے میں 17 ممالک سے 43 تجاویز آئیں۔ ترک معمار ویدات دالوکے کا تصور منتخب ہوا۔</p></article>
         <article><span>1970ء کی دہائی</span><h3>روایتی گنبد سے مختلف تصور</h3><p>منتخب منصوبہ روایتی جنوبی ایشیائی مسجد کی نقل کے بجائے بڑے بدوی خیمے جیسی تکونی کنکریٹ خول پر قائم تھا، جس نے جدید اسلام آباد کے لیے نئی بصری زبان تجویز کی۔</p></article>
@@ -176,7 +221,7 @@ const nearby = [
 
   <section id="visit" class="section visit">
     <div class="container">
-      <SectionHeading eyebrow="دورہ ترتیب دیں" title="وقت، فیس اور دورے کی عملی مدت" lead="نیچے دی گئی معلومات منصوبہ بندی کے لیے ہیں؛ فعال مسجد ہونے کی وجہ سے نماز، سکیورٹی اور بڑے اجتماعات کے دن اندرونی رسائی بدل سکتی ہے۔" />
+      <SectionHeading eyebrow="دورہ ترتیب دیں" title="مقام اور دورہ: اسلام آباد میں فیصل مسجد تک کیسے پہنچیں اور کتنا وقت دیں" latin="Location & how to visit Faisal Masjid in Islamabad" lead="نیچے دی گئی معلومات منصوبہ بندی کے لیے ہیں؛ فعال مسجد ہونے کی وجہ سے نماز، سکیورٹی اور بڑے اجتماعات کے دن اندرونی رسائی بدل سکتی ہے۔" />
       <div class="visit-cards">
         <article class="visit-card featured"><small>داخلہ / فیس</small><strong>مفت</strong><p>عمومی سیاحتی داخلے کے لیے ٹکٹ کی ضرورت نہیں۔ عطیہ یا مذہبی خیرات کو داخلہ فیس نہ سمجھیں۔</p></article>
         <article class="visit-card"><small>عوامی فہرست میں درج اوقات</small><strong>24 گھنٹے</strong><p>مگر اس کا مطلب ہر اندرونی حصہ ہر وقت سیاحوں کے لیے کھلا ہونا نہیں۔ نماز اور سکیورٹی ہدایات مقدم ہیں۔</p></article>
@@ -223,14 +268,17 @@ const nearby = [
   <section id="map" class="section section-white map-section">
     <div class="container map-grid">
       <div>
-        <SectionHeading eyebrow="مقام" title="مارگلہ کے دامن میں، سیکٹر E-8" lead="نقشہ اردو/پاکستان مقامی زبان اور خطے کی ترتیب کے ساتھ شامل ہے۔ راستہ شروع کرنے سے پہلے تازہ ٹریفک اور کسی عارضی سکیورٹی بندش کو دوبارہ دیکھیں۔" />
+        <SectionHeading eyebrow="مقام" title="مارگلہ کے دامن میں، سیکٹر E-8، اسلام آباد" latin="Location of Faisal Masjid, Islamabad — map & directions" lead="نقشہ اردو/پاکستان مقامی زبان اور خطے کی ترتیب کے ساتھ شامل ہے۔ راستہ شروع کرنے سے پہلے تازہ ٹریفک اور کسی عارضی سکیورٹی بندش کو دوبارہ دیکھیں۔" />
         <div class="address-card">
           <small>پتہ</small><strong>{siteMeta.address}</strong>
-          <small>تقریبی جغرافیائی نقاط</small><strong>{siteMeta.latitude}, {siteMeta.longitude}</strong>
+          <small>تقریبی جغرافیائی نقاط</small><strong dir="ltr">{siteMeta.latitude}, {siteMeta.longitude}</strong>
+          <small>پلس کوڈ</small><strong dir="ltr">P2HP+XV</strong>
+          <small>رابطہ نمبر</small><strong><a href={siteMeta.phoneHref} dir="ltr">{siteMeta.phone}</a></strong>
         </div>
+        <p class="map-outbound">سرکاری اپ ڈیٹس اور علاقائی سیاحتی معلومات کے لیے <a href={govtTourismUrl} target="_blank" rel="noopener noreferrer">پاکستان / اسلام آباد کا سرکاری سیاحتی پورٹل</a> دیکھیں؛ فیصل مسجد کی عوامی فہرست براہِ راست <a href={siteMeta.mapsShareUrl} target="_blank" rel="noopener noreferrer">گوگل نقشہ</a> پر بھی موجود ہے۔</p>
       </div>
       <div class="map-frame">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5910.524596272336!2d73.03464407734857!3d33.72992217328024!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbefce01e6917%3A0x3e66e0de3e2598c0!2z6LS56JCo5bCU5riF55yf5a-6!5e1!3m2!1sur!2spk!4v1787566007308!5m2!1sur!2spk" width="600" height="450" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="فیصل مسجد کا گوگل نقشہ"></iframe>
+        <iframe src={siteMeta.mapsEmbedSrc} width="100%" height="450" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="فیصل مسجد، اسلام آباد — گوگل نقشہ"></iframe>
       </div>
     </div>
   </section>
@@ -251,7 +299,8 @@ const nearby = [
 
   <section class="section section-dark nearby">
     <div class="container">
-      <SectionHeading eyebrow="آس پاس کیا دیکھیں" title="اسلام آباد کو ایک ہی نشان تک محدود نہ کریں" lead="یہ مقامات عوامی ثقافتی/قدرتی دلچسپی کے مقامات ہیں، تجارتی سفارش نہیں۔ فاصلے اور کھلے ہونے کی حالت سفر کے دن نقشے اور متعلقہ سرکاری معلومات سے چیک کریں۔" />
+      <SectionHeading eyebrow="آس پاس کیا دیکھیں" title="فیصل مسجد کے گرد قابلِ دید مقامات — اسلام آباد" latin="Landmarks & attractions around Faisal Masjid" lead="یہ مقامات عوامی ثقافتی/قدرتی دلچسپی کے مقامات ہیں، تجارتی سفارش نہیں۔ فاصلے اور کھلے ہونے کی حالت سفر کے دن نقشے اور متعلقہ سرکاری معلومات سے چیک کریں۔" />
+      <p class="nearby-cluster">فیصل مسجد کے دورے کے ساتھ زائرین آسانی سے قریبی تاریخی اور قدرتی مقامات بھی دیکھ سکتے ہیں، جن میں <strong>{nearbyLandmarks.primary}</strong> اور <strong>{nearbyLandmarks.secondary}</strong> خاص طور پر قابلِ توجہ ہیں۔</p>
       <div class="nearby-grid">
         {nearby.map(([name, desc], index) => <article><span>{String(index + 1).padStart(2,'0')}</span><h3>{name}</h3><p>{desc}</p></article>)}
       </div>
@@ -295,6 +344,8 @@ const nearby = [
       </div>
     </div>
   </section>
+
+  <SourcesSection />
 </BaseLayout>
 
 <style>
@@ -310,6 +361,23 @@ const nearby = [
 .hero-kicker span { padding:6px 12px; border:1px solid rgba(255,255,255,.3); border-radius:999px; font-size:.78rem; background:rgba(0,0,0,.18); }
 h1 { font-size:clamp(4rem,10vw,8.4rem); line-height:.95; letter-spacing:-.07em; margin:24px 0 22px; text-shadow:0 5px 26px rgba(0,0,0,.25); }
 .hero-sub { max-width:720px; color:#e5eee9; font-size:1.15rem; margin:0; line-height:1.85; }
+.h1-city { display:block; font-size:.26em; letter-spacing:.01em; margin-top:12px; color:#ead9ad; font-weight:700; }
+.hero-entity { max-width:780px; margin:18px 0 0; color:#dde8e3; font-size:.95rem; line-height:1.9; }
+.hero-entity strong { color:#fff; }
+.entity-strip { background:#0e251f; color:#e8f0eb; border-top:1px solid rgba(255,255,255,.08); }
+.entity-inner { display:grid; grid-template-columns:1fr auto; gap:18px; align-items:center; padding:16px 0; }
+.entity-crumbs { display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:.85rem; color:#c3d2cb; }
+.entity-crumbs strong { color:#e8d5a5; }
+.entity-crumbs span[aria-hidden="true"] { color:#6f8b80; }
+.entity-facts { display:flex; flex-wrap:wrap; gap:8px 24px; }
+.entity-facts div { display:grid; line-height:1.5; }
+.entity-facts small { color:#8fa39b; font-size:.68rem; }
+.entity-facts strong, .entity-facts a { font-size:.86rem; color:#f1f5f2; text-decoration:none; border-bottom:1px solid transparent; }
+.entity-facts a:hover { border-bottom-color:#d8bc7b; }
+.nearby-cluster { margin:22px 0 0; max-width:900px; color:#c3d2cb; font-size:.95rem; }
+.nearby-cluster strong { color:#e8d5a5; }
+.map-outbound { margin-top:16px; color:#4d625b; font-size:.86rem; }
+.map-outbound a { color:#8a682d; text-underline-offset:4px; }
 .hero-actions { display:flex; gap:10px; margin-top:28px; flex-wrap:wrap; }
 .hero-facts { color:#10241f; padding:8px 22px; background:rgba(255,253,248,.92); backdrop-filter:blur(14px); box-shadow:0 20px 50px rgba(0,0,0,.18); }
 .hero-facts div { padding:14px 0; border-bottom:1px solid rgba(16,36,31,.12); display:grid; grid-template-columns:90px 1fr; align-items:center; gap:8px; }
@@ -332,6 +400,6 @@ h1 { font-size:clamp(4rem,10vw,8.4rem); line-height:.95; letter-spacing:-.07em; 
 .photo-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:18px;margin-top:38px}.photo-grid figure{margin:0}.photo-grid img{width:100%;height:500px;object-fit:cover;border-radius:24px}.photo-grid .photo-large img{object-position:center}
 .faq-layout{display:grid;grid-template-columns:.7fr 1.3fr;gap:70px}.faq-side{position:sticky;top:110px;align-self:start}.faq-list details{border-top:1px solid var(--line);padding:0}.faq-list details:last-child{border-bottom:1px solid var(--line)}.faq-list summary{cursor:pointer;list-style:none;padding:21px 0;display:flex;justify-content:space-between;gap:16px;font-weight:800}.faq-list summary::-webkit-details-marker{display:none}.faq-list summary span{color:#a47b34;font-size:1.25rem}.faq-list details[open] summary span{transform:rotate(45deg)}.faq-list p{margin:-5px 0 24px;color:#53675f;font-size:.92rem;max-width:740px}
 .sources-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:56px}.source-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.source-cards article{padding:24px;border:1px solid var(--line);border-radius:20px;background:#fffdf8}.source-cards h3{margin:0 0 6px;font-size:1rem}.source-cards p{margin:0;color:#566b63;font-size:.84rem}
-@media(max-width:1000px){.hero-content{grid-template-columns:1fr}.hero-facts{display:grid;grid-template-columns:repeat(2,1fr)}.hero-facts div{display:block}.hero-facts span{display:block}.timeline{grid-template-columns:repeat(2,1fr)}.architecture-grid{grid-template-columns:1fr}.arch-image{position:static}.arch-image img{aspect-ratio:16/9}.etiquette-grid,.visit-cards,.facility-grid{grid-template-columns:repeat(2,1fr)}.map-grid,.food-grid,.faq-layout,.sources-grid{grid-template-columns:1fr}.faq-side{position:static}.nearby-grid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:1000px){.entity-inner{grid-template-columns:1fr}.hero-content{grid-template-columns:1fr}.hero-facts{display:grid;grid-template-columns:repeat(2,1fr)}.hero-facts div{display:block}.hero-facts span{display:block}.timeline{grid-template-columns:repeat(2,1fr)}.architecture-grid{grid-template-columns:1fr}.arch-image{position:static}.arch-image img{aspect-ratio:16/9}.etiquette-grid,.visit-cards,.facility-grid{grid-template-columns:repeat(2,1fr)}.map-grid,.food-grid,.faq-layout,.sources-grid{grid-template-columns:1fr}.faq-side{position:static}.nearby-grid{grid-template-columns:repeat(2,1fr)} }
 @media(max-width:720px){.hero{min-height:720px}.hero-content{padding-bottom:38px}.hero-facts{grid-template-columns:1fr 1fr;padding:6px 14px}.hero-facts div{padding:10px}.photo-credit{display:none}.quick-grid{grid-template-columns:repeat(2,1fr)}.quick-grid>div:nth-child(3){border-top:1px solid rgba(255,255,255,.1)}.quick-grid>div:nth-child(4){border-top:1px solid rgba(255,255,255,.1)}.intro-grid{grid-template-columns:1fr;gap:26px}.timeline,.etiquette-grid,.visit-cards,.facility-grid,.transport-grid,.nearby-grid,.source-cards{grid-template-columns:1fr}.transport-main{grid-column:auto}.history-note{grid-template-columns:1fr}.season-grid{grid-template-columns:1fr}.photo-grid{grid-template-columns:1fr}.photo-grid img{height:330px}.map-frame,.map-frame iframe{min-height:380px;height:380px}.nearby-grid{grid-template-columns:1fr}h1{font-size:clamp(4rem,22vw,6.5rem)}}
 </style>
