@@ -1,7 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withSiteName } from '../data/site';
 ---
-<BaseLayout title="استعمال کی شرائط — فیصل مسجد رہنما" description="فیصل مسجد رہنما کی استعمال کی شرائط: آزاد غیر منافع بخش حیثیت، معلومات کی حدود، تصاویر و نقشہ، ذمہ داری اور قابل قبول استعمال۔" compactHeader={true}>
+export const prerender = false;
+
+<BaseLayout title={withSiteName('استعمال کی شرائط')} description="فیصل مسجد رہنما کی استعمال کی شرائط: آزاد غیر منافع بخش حیثیت، معلومات کی حدود، تصاویر و نقشہ، ذمہ داری اور قابل قبول استعمال۔" compactHeader={true}>
   <section class="legal-hero"><div class="container"><span class="eyebrow">قانونی معلومات</span><h1>استعمال کی شرائط</h1><p>آخری اپ ڈیٹ: اگست 2026</p></div></section>
   <section class="section"><div class="container legal-grid">
     <aside><a href="#accept">قبولیت</a><a href="#independent">آزاد حیثیت</a><a href="#accuracy">درستگی</a><a href="#travel">سفری فیصلے</a><a href="#ip">دانشورانہ حقوق</a><a href="#maps">نقشہ و خدمات</a><a href="#liability">ذمہ داری</a></aside>

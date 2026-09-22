@@ -2,95 +2,56 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import SourcesSection from '../components/SourcesSection.astro';
+import { faqUr } from '../data/faq';
+import { buildAttractionSchema, buildBreadcrumbSchema, buildFaqSchema } from '../lib/schema';
 import { govtTourismUrl, nearbyLandmarks, photos, siteMeta } from '../data/site';
+import WeatherSection from '../components/WeatherSection.astro';
+import {
+  quarterly,
+  climateNature,
+  groupPlans,
+  routes,
+  visitorServices,
+  responsibility,
+  type Bi,
+} from '../data/guide';
+
+const en = false;
+const bi = (b: Bi) => (en ? b.en : b.ur);
+const t = {
+  qEyebrow: { ur: 'ربع سالانہ حکمتِ عملی', en: 'Quarterly strategy' },
+  qTitle: { ur: 'سال بھر میں بہترین وقت', en: 'The best time through the year' },
+  qLead: { ur: 'اسلام آباد کے موسمی چکر کے مطابق فیصل مسجد دیکھنے کا منصوبہ بنائیں۔', en: 'Plan your Faisal Mosque visit around Islamabad’s seasonal cycle.' },
+  qClimate: { ur: 'موسم', en: 'Climate' },
+  qAdvice: { ur: 'مشورہ', en: 'Advice' },
+  qBest: { ur: 'موزوں برائے', en: 'Best for' },
+  cEyebrow: { ur: 'موسم، فضا اور قدرت', en: 'Climate, air & nature' },
+  cTitle: { ur: 'موسم، فضائی معیار اور قدرتی ماحول کا تجزیہ', en: 'Climate, air quality & natural environment' },
+  cLead: { ur: 'طویل المدت ریکارڈ کی بنیاد پر ایک متوازن تجزیہ۔', en: 'A balanced reading based on long-term records.' },
+  pEyebrow: { ur: 'آپ کا سفری گروپ', en: 'Your travel group' },
+  pTitle: { ur: 'سفری تشکیل کے مطابق تجاویز', en: 'Tips by travel composition' },
+  pLead: { ur: 'اپنی سفری ترکیب اور رفتار کے مطابق راستہ چنیں۔', en: 'Choose a route by your group and pace.' },
+  rEyebrow: { ur: 'تجویز کردہ راستے', en: 'Suggested routes' },
+  rTitle: { ur: 'عمومی راستے: نصفِ دن اور پورا دن', en: 'General routes: half-day & full-day' },
+  rLead: { ur: 'وقت کے مطابق دو متبادل راستے۔', en: 'Two alternatives by available time.' },
+  sEyebrow: { ur: 'زائرین کی سہولیات', en: 'Visitor services' },
+  sTitle: { ur: 'آس پاس کی سہولیات (قسم کے لحاظ سے)', en: 'Facilities nearby (by type)' },
+  sLead: { ur: 'مخصوص کاروبار کی سفارش نہیں، صرف اقسام کی رہنمائی۔', en: 'No specific business recommended — only guidance by type.' },
+  resEyebrow: { ur: 'سائنسی پہلو اور ذمہ داری', en: 'Science & responsibility' },
+  resTitle: { ur: 'زائرین کی ذمہ داری اور مقام کی حفاظت', en: 'Visitor responsibility & site care' },
+  resLead: { ur: 'ایک پر امن مقام کو برقرار رکھنے میں آپ کا کردار۔', en: 'Your role in keeping a peaceful site intact.' },
+};
 
 const pageUrl = Astro.site ? new URL('/', Astro.site).href : undefined;
-const attractionId = pageUrl ? `${pageUrl}#attraction` : undefined;
-const attractionJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': ['TouristAttraction', 'Mosque'],
-  ...(attractionId ? { '@id': attractionId } : {}),
-  name: siteMeta.latinName,
-  alternateName: [
-    siteMeta.attractionName,
-    siteMeta.alternateName,
-    siteMeta.officialName,
-    siteMeta.englishName,
-    `${siteMeta.cityLatin} ${siteMeta.latinName}`,
-    `${siteMeta.city} ${siteMeta.attractionName}`,
-  ],
-  description:
-    'اسلام آباد، اسلام آباد کیپیٹل ٹیریٹری، پاکستان میں مارگلہ پہاڑیوں کے دامن واقع پاکستان کی قومی مسجد۔ Comprehensive visitor guide to Faisal Masjid (Shah Faisal Mosque) in Islamabad, Islamabad Capital Territory, Pakistan.',
-  ...(pageUrl ? { url: pageUrl } : {}),
-  image: [photos.hero.src, photos.courtyard.src, photos.night.src],
-  isAccessibleForFree: true,
-  telephone: siteMeta.phone,
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: siteMeta.streetAddress,
-    addressLocality: siteMeta.cityLatin,
-    addressRegion: siteMeta.regionLatin,
-    postalCode: siteMeta.postalCode,
-    addressCountry: siteMeta.countryCode,
-  },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude: siteMeta.latitude,
-    longitude: siteMeta.longitude,
-  },
-  hasMap: siteMeta.mapsShareUrl,
-  sameAs: [siteMeta.mapsShareUrl, govtTourismUrl, 'https://en.wikipedia.org/wiki/Faisal_Mosque'],
-  containedInPlace: {
-    '@type': 'AdministrativeArea',
-    name: siteMeta.regionLatin,
-    containedInPlace: { '@type': 'Country', name: siteMeta.countryLatin },
-  },
-  openingHoursSpecification: [{
-    '@type': 'OpeningHoursSpecification',
-    dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
-    opens: '00:00',
-    closes: '23:59',
-  }],
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: siteMeta.rating,
-    reviewCount: siteMeta.reviewCount,
-    bestRating: 5,
-  },
-};
-
-const faqItems = [
-  { q: 'کیا فیصل مسجد میں داخلے کے لیے ٹکٹ درکار ہے؟', a: 'عام طور پر مسجد میں داخلہ مفت ہے اور سیاحتی ٹکٹ درکار نہیں۔ تاہم نماز، جمعہ، رمضان، عید یا سکیورٹی انتظامات کے دوران بعض حصوں تک رسائی محدود ہو سکتی ہے۔' },
-  { q: 'غیر مسلم زائرین مسجد دیکھ سکتے ہیں؟', a: 'عمومی طور پر باادب سیاح مسجد کے بیرونی حصوں اور دستیاب اندرونی حصوں کا مشاہدہ کر سکتے ہیں، لیکن مرکزی عبادت گاہ میں رسائی نماز اور انتظامی ہدایات کے مطابق بدل سکتی ہے۔ موقع پر موجود عملے اور سکیورٹی کی ہدایات کو ترجیح دیں۔' },
-  { q: 'لباس کے بارے میں کیا احتیاط ضروری ہے؟', a: 'کندھوں اور ٹانگوں کو ڈھانپنے والا سادہ اور باوقار لباس مناسب ہے۔ خواتین کے لیے سر ڈھانپنا احتراماً بہتر اور بعض اوقات ضروری سمجھا جاتا ہے۔ عبادت گاہ میں داخل ہونے سے پہلے جوتے اتارے جاتے ہیں۔' },
-  { q: 'دورے کے لیے کتنا وقت رکھنا چاہیے؟', a: 'فنِ تعمیر، صحن، اندرونی حصے اور تصویری مشاہدے کے لیے تقریباً 60 سے 90 منٹ ایک مناسب عملی مدت ہے۔ جمعہ یا نماز کے اوقات میں اضافی وقت رکھیں۔' },
-  { q: 'بہترین وقت کون سا ہے؟', a: 'نسبتاً پرسکون سیاحتی مشاہدے کے لیے عام دفتری دنوں کی صبح یا عصر سے پہلے کا وقت موزوں رہتا ہے۔ غروبِ آفتاب کے قریب عمارت اور مارگلہ پہاڑیوں کی روشنی خاص طور پر خوبصورت ہوتی ہے، مگر نماز کے اوقات کا احترام ضروری ہے۔' },
-  { q: 'کیا پارکنگ اور بیت الخلا موجود ہیں؟', a: 'مسجد کے احاطے اور قریب پارکنگ کی جگہیں اور وضو/بیت الخلا کی سہولیات موجود رہتی ہیں، مگر جمعہ، رمضان اور بڑے اجتماعات میں گنجائش اور رسائی بدل سکتی ہے۔ صفائی اور کھلے حصوں کی حالت بھی وقت کے ساتھ مختلف ہو سکتی ہے۔' },
-  { q: 'پبلک ٹرانسپورٹ سے کیسے پہنچیں؟', a: 'سی ڈی اے کے شائع شدہ فیڈر روٹ FR-03A میں پی آئی ایم ایس ہسپتال/میٹرو اسٹیشن اور فیصل مسجد شامل ہیں۔ روٹ اور فریکوئنسی میں تبدیلی ممکن ہے، اس لیے روانگی سے پہلے سرکاری کیپٹل ماس ٹرانزٹ معلومات یا ایپ سے تازہ شیڈول دیکھیں۔' },
-  { q: 'کیا مسجد میں فوٹوگرافی کی اجازت ہے؟', a: 'بیرونی فنِ تعمیر کی فوٹوگرافی عام سیاحتی سرگرمی ہے، مگر عبادت کرنے والوں کی پرائیویسی، سکیورٹی نشان دہی اور موقع پر موجود ہدایات کا احترام کریں۔ اندرونی حصوں میں فلیش، ٹرائی پوڈ یا مخصوص زاویوں پر پابندی ہو سکتی ہے۔' },
-  { q: 'فیصل مسجد کا مکمل پتہ، پلس کوڈ اور رابطہ نمبر کیا ہے؟', a: `پتہ: شاہ فیصل ایونیو، سیکٹر E-8، اسلام آباد 44000، پاکستان۔ گوگل پلس کوڈ: ${siteMeta.plusCode}۔ عوامی فہرست میں درج رابطہ نمبر: ${siteMeta.phone}۔ نقاط برائے راستہ: ${siteMeta.latitude}, ${siteMeta.longitude}۔` },
-  { q: 'کیا فیصل مسجد شام یا رات کے وقت بھی دیکھی جا سکتی ہے؟', a: 'غروبِ آفتاب اور رات کی روشنی میں مسجد کا سفید خیمہ نما خاکہ اور چار مینار خاص طور پر نمایاں ہوتے ہیں۔ تاہم عصر، مغرب اور عشاء کی نماز کے اوقات اور سکیورٹی انتظامات کے مطابق کھلے حصوں تک رسائی بدل سکتی ہے؛ رات کے دورے سے پہلے مقامی ٹریفک اور روشنی کا خیال رکھیں۔' },
-];
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faqItems.map((item) => ({
-    '@type': 'Question',
-    name: item.q,
-    acceptedAnswer: { '@type': 'Answer', text: item.a },
-  })),
-};
-
-const facilityItems = [
-  ['وضو اور بیت الخلا', 'مسجد کمپلیکس میں وضو اور بیت الخلا کی سہولیات موجود ہیں۔ مختلف حصوں کی دستیابی اور صفائی وقت، ہجوم اور دیکھ بھال کے مطابق بدل سکتی ہے۔'],
-  ['پارکنگ', 'احاطے اور قریب عمومی پارکنگ کی گنجائش موجود ہے۔ جمعہ، رمضان، عید اور بڑے اجتماعات میں سکیورٹی عملہ گاڑیوں کو متبادل حصوں کی طرف بھیج سکتا ہے؛ مقررہ فیس کے بارے میں کوئی مستقل عوامی نرخ فرض نہ کریں۔'],
-  ['وہیل چیئر اور محدود نقل و حرکت', 'وسیع صحن کے کئی حصے ہموار ہیں، مگر بعض راستوں، داخلی تبدیلیوں یا سیڑھیوں کے باعث مدد درکار ہو سکتی ہے۔ مخصوص قابلِ رسائی راستہ سفر سے پہلے موقع پر تصدیق کریں۔'],
-  ['پینے کا پانی اور آرام', 'مسجد عبادت گاہ ہے، مکمل سیاحتی لاؤنج نہیں۔ پانی اور آرام کے دستیاب مقامات موقع کے انتظام کے مطابق ہوتے ہیں؛ گرمی میں اپنی پانی کی بوتل ساتھ رکھنا بہتر ہے۔'],
-  ['کھانا', 'عبادت کے مرکزی حصے میں کھانے کو ترجیح نہ دیں۔ قریبی شہری سیکٹرز میں پاکستانی کھانا، چائے، بیکری، کیفے اور خاندانی ریستوران جیسی اقسام دستیاب ہیں۔'],
-  ['قیام', 'اسلام آباد کے مرکزی سیکٹرز میں ہوٹل، گیسٹ ہاؤس اور سروسڈ اپارٹمنٹ جیسی مختلف رہائشی اقسام ملتی ہیں؛ یہ رہنما کسی مخصوص کاروبار کی توثیق نہیں کرتا۔'],
-  ['روزمرہ خریداری', 'قریبی تجارتی مراکز میں جنرل اسٹور، سپرمارکیٹ، فارمیسی اور سہولت اسٹور جیسی خدمات عام ہیں۔ مذہبی مقام کے اندر خریداری پر انحصار نہ کریں۔'],
-  ['ایندھن اور برقی چارجنگ', 'اسلام آباد کے شہری سیکٹرز میں روایتی فیول اسٹیشن اور محدود برقی گاڑی چارجنگ سہولیات مل سکتی ہیں۔ چارجر کی قسم، دستیابی اور اوقات روانگی سے پہلے متعلقہ نقشہ/آپریٹر پر چیک کریں۔'],
-];
+const attractionJsonLd = buildAttractionSchema(pageUrl);
+const breadcrumbJsonLd = buildBreadcrumbSchema(pageUrl, [
+  { name: siteMeta.countryLatin, url: pageUrl },
+  { name: siteMeta.regionLatin },
+  { name: siteMeta.cityLatin },
+  { name: `${siteMeta.englishName} (${siteMeta.latinName})` },
+]);
+const faqItems = faqUr;
+const faqJsonLd = buildFaqSchema(faqItems);
 
 const nearby = [
   ['مارگلہ ہلز نیشنل پارک', 'مسجد کے پس منظر میں واقع پہاڑی سلسلہ؛ پیدل راستوں اور قدرتی مناظر کے لیے اسی دن کا موزوں امتزاج۔'],
@@ -101,15 +62,22 @@ const nearby = [
   ['راول جھیل کے اطراف', 'شہر کے جنوب مشرق میں کھلا منظر اور تفریحی ماحول؛ وقت کی کمی ہو تو اسے الگ نصف روزہ پروگرام سمجھیں۔'],
 ];
 ---
+export const prerender = false;
+
 <BaseLayout
-  title="فیصل مسجد اسلام آباد — تاریخ، فنِ تعمیر، مقام اور مکمل سیاحتی رہنما"
-  description={`فیصل مسجد (Faisal Masjid / Shah Faisal Mosque) اسلام آباد کا آزاد غیر منافع بخش اردو سیاحتی رہنما: مقام اور نقشہ، مفت داخلہ، نماز کے آداب، پبلک ٹرانسپورٹ، ائیرپورٹ رسائی، پارکنگ، سہولیات، قریبی ${nearbyLandmarks.primary} اور ${nearbyLandmarks.secondary}، تاریخ اور عام سوالات۔`}
+  lang="ur"
+  alternatePath="/en/"
+  title="فیصل مسجد اسلام آباد — تاریخ، اوقات، داخلہ اور سیاحتی رہنما | Faisal Masjid Islamabad"
+  description={`فیصل مسجد اسلام آباد (Faisal Masjid / Shah Faisal Mosque) کا مکمل اردو رہنما: داخلہ عام طور پر مفت، نماز کے اوقات اور دورے کا بہترین وقت، لباس اور آداب، پبلک ٹرانسپورٹ (FR-03A) اور پارکنگ، مارگلہ ہلز کے دامن مقام و نقشہ، تاریخ اور فنِ تعمیر۔`}
   ogImage={photos.hero.src}
   ogImageAlt="فیصل مسجد (Faisal Masjid)، اسلام آباد — مارگلہ پہاڑیوں کے سامنے سفید خیمہ نما مرکزی ہال اور چار مینار"
-  jsonLd={[attractionJsonLd, faqJsonLd]}
+  jsonLd={[attractionJsonLd, faqJsonLd, breadcrumbJsonLd].filter(Boolean)}
 >
   <section class="hero">
-    <img class="hero-photo" src={photos.hero.src} alt={photos.hero.alt} width="1280" height="853" fetchpriority="high" />
+    <picture>
+      <source type="image/webp" srcset={`${photos.hero.webpSmall} 800w, ${photos.hero.webp} 1280w`} sizes="100vw" />
+      <img class="hero-photo" src={photos.hero.src} srcset={`${photos.hero.src} 1280w`} sizes="100vw" alt={photos.hero.alt} width="1280" height="853" fetchpriority="high" decoding="async" />
+    </picture>
     <div class="hero-shade"></div>
     <div class="hero-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="container hero-content">
@@ -186,6 +154,11 @@ const nearby = [
         <article><span>1986</span><h3>عمارت کی تکمیل</h3><p>تقریباً ایک دہائی کی تعمیر کے بعد مرکزی کمپلیکس مکمل ہوا۔ بعد کے برسوں میں یہ قومی مسجد، فعال عبادت گاہ اور اسلام آباد کی سب سے پہچانی جانے والی جدید عمارتوں میں شمار ہونے لگی۔</p></article>
       </div>
       <div class="history-note"><strong>ادارتی نوٹ</strong><p>مشہور مختصر روایت اسے صرف “سعودی تحفہ” کہتی ہے، لیکن پاکستانی پارلیمانی اور سی ڈی اے مواد تعمیر، مالیات اور دیکھ بھال میں پاکستان اور سی ڈی اے کی شمولیت بھی بیان کرتا ہے۔ اسی لیے یہاں زیادہ متوازن تاریخی زبان استعمال کی گئی ہے۔</p></div>
+      <div class="history-design">
+        <h3>معماری علامتیات اور ڈیزائن کی کہانی</h3>
+        <p>ویدات دالوکے نے خیمے کے استعارے کو اس لیے چنا کہ بدوی خیمہ مساوات اور سادگی کی ایک قدیم علامت ہے؛ چاروں مینار ترکی روایت کے پہاڑی میناروں کی یاد دلاتے ہیں اور عمودی توازن پیدا کرتے ہیں۔ بغیر گنبد کے یہ ڈیزائن روایتی جنوبی ایشیائی مسجد سے جان بوجھ کر الگ کھڑا کیا گیا۔</p>
+        <p>مرکزی ہال اور صحن مل کر تقریباً تین لاکھ نمازیوں کی گنجائش رکھتے ہیں، جس سے یہ دنیا کی سب سے بڑی مسجدوں میں شمار ہوتی ہے۔ اس کا مربع نما ڈھانچہ، سفید کنکریٹ اور مارگلہ پہاڑیوں کے ساتھ تعلق جدید اسلامی تعمیرات کی ایک الگ اور پہچانی جانے والی شناخت ہے۔</p>
+      </div>
     </div>
   </section>
 
@@ -236,16 +209,7 @@ const nearby = [
     </div>
   </section>
 
-  <section id="facilities" class="section section-dark facilities">
-    <div class="container">
-      <SectionHeading eyebrow="سہولیات اور روزمرہ ضروریات" title="بیت الخلا سے پارکنگ، رہائش اور برقی گاڑی چارجنگ تک" lead="یہ حصہ مخصوص دکاندار یا کاروبار کی سفارش کے بجائے زائرین کو دستیاب سہولت کی قسم اور عملی احتیاط بتاتا ہے۔" />
-      <div class="facility-grid">
-        {facilityItems.map(([title, text], index) => (
-          <article><span>{String(index + 1).padStart(2,'0')}</span><h3>{title}</h3><p>{text}</p></article>
-        ))}
-      </div>
-    </div>
-  </section>
+  <WeatherSection lang="ur" />
 
   <section id="transport" class="section transport">
     <div class="container">
@@ -282,6 +246,160 @@ const nearby = [
       </div>
     </div>
   </section>
+
+  <section id="seasons" class="section seasons">
+    <div class="container">
+      <SectionHeading eyebrow={bi(t.qEyebrow)} title={bi(t.qTitle)} lead={bi(t.qLead)} />
+      <div class="season-table">
+        {quarterly.map((q) => (
+          <article class="season-row">
+            <div class="season-head">
+              <h3>{bi(q.season)}</h3>
+              <span class="season-months">{bi(q.months)}</span>
+            </div>
+            <div class="season-body">
+              <p><strong>{bi(t.qClimate)}:</strong> {bi(q.climate)}</p>
+              <p><strong>{bi(t.qAdvice)}:</strong> {bi(q.advice)}</p>
+              <p class="season-best"><strong>{bi(t.qBest)}:</strong> {bi(q.bestFor)}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="climate" class="section section-dark climate">
+    <div class="container">
+      <SectionHeading eyebrow={bi(t.cEyebrow)} title={bi(t.cTitle)} lead={bi(t.cLead)} />
+      <p class="climate-intro">{bi(climateNature.intro)}</p>
+      <div class="climate-grid">
+        {climateNature.points.map((p) => (
+          <article class="climate-card">
+            <span class="c-ic" aria-hidden="true">{p.icon}</span>
+            <h3>{bi(p.title)}</h3>
+            <p>{bi(p.body)}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="plans" class="section plans">
+    <div class="container">
+      <SectionHeading eyebrow={bi(t.pEyebrow)} title={bi(t.pTitle)} lead={bi(t.pLead)} />
+      <div class="plan-grid">
+        {groupPlans.map((pl) => (
+          <article class="plan-card">
+            <div class="plan-head">
+              <span class="plan-ic" aria-hidden="true">{pl.icon}</span>
+              <div>
+                <h3>{bi(pl.title)}</h3>
+                <span class="plan-dur">{bi(pl.duration)}</span>
+              </div>
+            </div>
+            <p>{bi(pl.summary)}</p>
+            <ul>{pl.tips.map((tip) => <li>{bi(tip)}</li>)}</ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="routes" class="section section-white routes">
+    <div class="container">
+      <SectionHeading eyebrow={bi(t.rEyebrow)} title={bi(t.rTitle)} lead={bi(t.rLead)} />
+      <div class="route-grid">
+        {routes.map((r) => (
+          <article class="route-card">
+            <h3>{bi(r.title)}</h3>
+            <p class="route-sum">{bi(r.summary)}</p>
+            <ol class="route-steps">
+              {r.steps.map((s) => (
+                <li><span class="step-time">{bi(s.time)}</span><span>{bi(s.text)}</span></li>
+              ))}
+            </ol>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="section services">
+    <div class="container">
+      <SectionHeading eyebrow={bi(t.sEyebrow)} title={bi(t.sTitle)} lead={bi(t.sLead)} />
+      <div class="service-grid">
+        {visitorServices.map((s) => (
+          <article class="service-card">
+            <span class="s-ic" aria-hidden="true">{s.icon}</span>
+            <h3>{bi(s.title)}</h3>
+            <p>{bi(s.body)}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="responsibility" class="section section-dark responsibility">
+    <div class="container">
+      <SectionHeading eyebrow={bi(t.resEyebrow)} title={bi(t.resTitle)} lead={bi(t.resLead)} />
+      <p class="resp-intro">{bi(responsibility.intro)}</p>
+      <div class="resp-grid">
+        {responsibility.points.map((p) => (
+          <article class="resp-card">
+            <span class="r-ic" aria-hidden="true">{p.icon}</span>
+            <h3>{bi(p.title)}</h3>
+            <p>{bi(p.body)}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .seasons .season-table { display: grid; gap: 14px; margin-top: 34px; }
+    .season-row { display: grid; grid-template-columns: .8fr 1.2fr; gap: 24px; padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: #fffdf8; align-items: start; }
+    .season-head h3 { margin: 0 0 4px; font-size: 1.2rem; }
+    .season-months { color: #8f6d2f; font-size: .85rem; font-weight: 700; }
+    .season-body p { margin: 0 0 8px; color: #3e5750; font-size: .92rem; line-height: 1.8; }
+    .season-body strong { color: var(--ink); }
+    .season-best { color: #566b63 !important; }
+    .climate-intro { max-width: 880px; color: #c8d5cf; font-size: 1rem; margin: 0 0 30px; }
+    .climate-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .climate-card { padding: 24px; border: 1px solid rgba(255,255,255,.12); border-radius: 20px; background: rgba(255,255,255,.04); }
+    .climate-card .c-ic { font-size: 1.6rem; }
+    .climate-card h3 { margin: 12px 0 8px; font-size: 1.1rem; color: #f4efe2; }
+    .climate-card p { margin: 0; color: #b9c9c1; font-size: .9rem; line-height: 1.85; }
+    .plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 34px; }
+    .plan-card { padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: #fffdf8; display: grid; align-content: start; }
+    .plan-head { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+    .plan-ic { font-size: 1.8rem; }
+    .plan-head h3 { margin: 0; font-size: 1.12rem; }
+    .plan-dur { color: #8f6d2f; font-size: .8rem; font-weight: 700; }
+    .plan-card p { margin: 0 0 12px; color: #566b63; font-size: .9rem; }
+    .plan-card ul { margin: 0; padding-inline-start: 1.1rem; color: #3e5750; font-size: .88rem; display: grid; gap: 7px; }
+    .route-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 34px; }
+    .route-card { padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: #fffdf8; }
+    .route-card h3 { margin: 0 0 6px; font-size: 1.18rem; }
+    .route-sum { color: #566b63; font-size: .9rem; margin: 0 0 16px; }
+    .route-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+    .route-steps li { display: grid; grid-template-columns: 90px 1fr; gap: 12px; align-items: start; }
+    .step-time { font-weight: 800; color: #8f6d2f; font-size: .85rem; }
+    .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 34px; }
+    .service-card { padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: #fffdf8; }
+    .service-card .s-ic { font-size: 1.6rem; }
+    .service-card h3 { margin: 10px 0 8px; font-size: 1.05rem; }
+    .service-card p { margin: 0; color: #566b63; font-size: .88rem; line-height: 1.85; }
+    .resp-intro { max-width: 880px; color: #c8d5cf; font-size: 1rem; margin: 0 0 30px; }
+    .resp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .resp-card { padding: 24px; border: 1px solid rgba(255,255,255,.12); border-radius: 20px; background: rgba(255,255,255,.04); }
+    .resp-card .r-ic { font-size: 1.5rem; }
+    .resp-card h3 { margin: 10px 0 8px; font-size: 1.05rem; color: #f4efe2; }
+    .resp-card p { margin: 0; color: #b9c9c1; font-size: .9rem; line-height: 1.85; }
+    @media (max-width: 1000px) {
+      .season-row { grid-template-columns: 1fr; }
+      .climate-grid, .plan-grid, .route-grid, .service-grid, .resp-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 
   <section class="section food">
     <div class="container food-grid">

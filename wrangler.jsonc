@@ -1,9 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "faisal-masjid-guide",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-08-01",
   "assets": {
-    "directory": "./dist",
+    "directory": "./dist/client",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   }

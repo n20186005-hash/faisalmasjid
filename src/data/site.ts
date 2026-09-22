@@ -6,9 +6,16 @@
 /** SEO سائٹ کا نام: "مقام کا نام + شہر + سیاحتی رہنما" یکساں ساخت کے مطابق۔ */
 export const SITE_NAME = 'فیصل مسجد اسلام آباد — سیاحتی رہنما';
 export const SITE_NAME_LATIN = 'Faisal Masjid Islamabad — Visitor Guide';
+/** انگریزی سائٹ کا نام (/en/ کے TDK، og:site_name اور PWA کے لیے) */
+export const SITE_NAME_EN = 'Faisal Mosque Islamabad — Visitor Guide';
 
 /** ذیلی صفحات کے عنوان کے ساتھ سائٹ کا نام جوڑنے کا معاون فنکشن۔ */
 export const withSiteName = (suffix: string) => `${suffix} | ${SITE_NAME}`;
+/** انگریزی صفحات کے لیے اسی ساخت کا معاون فنکشن۔ */
+export const withSiteNameEn = (suffix: string) => `${suffix} | ${SITE_NAME_EN}`;
+
+/** sitemap کے lastmod اور ادارتی جائزے کے لیے آخری تازہ کاری کی تاریخ۔ */
+export const LAST_UPDATED_ISO = '2026-09-22';
 
 export const siteMeta = {
   /** اصل ڈومین کا مطلب / عام استعمال ہونے والا نام */
@@ -55,6 +62,8 @@ export const siteMeta = {
 export const nearbyLandmarks = {
   primary: 'مارگلہ ہلز نیشنل پارک',
   secondary: 'پاکستان مونومنٹ و میوزیم',
+  primaryLatin: 'Margalla Hills National Park',
+  secondaryLatin: 'Pakistan Monument & Museum',
 } as const;
 
 /** سرکاری / ادارہ جاتی سیاحتی پورٹل (GOVT_TOURISM_URL) */
@@ -64,33 +73,45 @@ export const govtTourismUrl = 'https://tourism.gov.pk/';
 export const sources = [
   {
     label: 'کیپٹل ڈویلپمنٹ اتھارٹی (CDA) — اسلام آباد',
+    labelEn: 'Capital Development Authority (CDA) — Islamabad',
     href: 'https://www.cda.gov.pk/',
     note: 'شہری انتظام، فیصل مسجد کی دیکھ بھال اور مقامی سہولت سے متعلق عوامی مواد۔',
+    noteEn: 'Public material on civic administration, upkeep of Faisal Mosque and local facilities.',
   },
   {
     label: 'کیپٹل ماس ٹرانزٹ — فیڈر روٹ FR-03A',
+    labelEn: 'Capital Mass Transit — feeder route FR-03A',
     href: 'https://www.cda.gov.pk/metro',
     note: 'پی آئی ایم ایس میٹرو اسٹیشن ↔ فیصل مسجد پبلک ٹرانسپورٹ روٹ کی سرکاری معلومات۔',
+    noteEn: 'Official information on the PIMS Metro Station ↔ Faisal Mosque public transport route.',
   },
   {
     label: 'پاکستان ٹورزم ڈویلپمنٹ کارپوریشن (PTDC)',
+    labelEn: 'Pakistan Tourism Development Corporation (PTDC)',
     href: 'https://tourism.gov.pk/',
     note: 'اسلام آباد اور آس پاس کے سیاحتی مقامات کے لیے سرکاری سیاحتی پورٹل۔',
+    noteEn: 'Official tourism portal for Islamabad and surrounding attractions.',
   },
   {
     label: 'قومی اسمبلی پاکستان — عوامی دستاویزات',
+    labelEn: 'National Assembly of Pakistan — public documents',
     href: 'https://na.gov.pk/',
     note: 'مسجد کی دیکھ بھال اور ادارہ جاتی ذمہ داری سے متعلق سرکاری ریکارڈ۔',
+    noteEn: 'Official record on mosque upkeep and institutional responsibility.',
   },
   {
     label: 'وکی پیڈیا — Faisal Mosque',
+    labelEn: 'Wikipedia — Faisal Mosque',
     href: 'https://en.wikipedia.org/wiki/Faisal_Mosque',
     note: 'ڈیزائن مقابلہ، معمار ویدات دالوکے، تعمیر کا دورانیہ اور معماری کی تفصیل۔',
+    noteEn: 'Design competition, architect Vedat Dalokay, construction timeline and architectural detail.',
   },
   {
     label: 'گوگل نقشہ — فیصل مسجد کی عوامی فہرست',
+    labelEn: 'Google Maps — public listing of Faisal Mosque',
     href: 'https://maps.app.goo.gl/wE3fcsHKGqjRnXiu5',
     note: 'پتہ، پلس کوڈ، عمومی اوقات اور مجموعی زائرین کی درجہ بندی (تازہ تصدیق ضروری)۔',
+    noteEn: 'Address, plus code, general hours and aggregate visitor rating (verify before travelling).',
   },
 ] as const;
 
@@ -102,9 +123,20 @@ export const sourceLinks = [
   { label: 'قومی اسمبلی پاکستان — عوامی دستاویزات', href: 'https://na.gov.pk/' },
 ] as const;
 
+/** فوٹر کے انگریزی ورژن کے ماخذ روابط */
+export const sourceLinksEn = [
+  { label: 'Capital Development Authority — Islamabad', href: 'https://www.cda.gov.pk/' },
+  { label: 'Capital Mass Transit — official route information', href: 'https://www.cda.gov.pk/metro' },
+  { label: 'Pakistan Tourism Development Corporation', href: 'https://tourism.gov.pk/' },
+  { label: 'National Assembly of Pakistan — public documents', href: 'https://na.gov.pk/' },
+] as const;
+
 export const photos = {
   hero: {
     src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Faisal_Mosque_islamabad_01.jpg/1280px-Faisal_Mosque_islamabad_01.jpg',
+    /** Core Web Vitals: LCP عنصر کے لیے WebP ورژن (جدید براؤزرز کم حجم پائیں گے)۔ */
+    webp: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Faisal_Mosque_islamabad_01.jpg/1280px-Faisal_Mosque_islamabad_01.webp',
+    webpSmall: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Faisal_Mosque_islamabad_01.jpg/800px-Faisal_Mosque_islamabad_01.webp',
     alt: 'فیصل مسجد اسلام آباد — مارگلہ پہاڑیوں کے سامنے سفید خیمہ نما مرکزی ہال اور چار مینار کا مرکزی منظر، پاکستان',
     credit: 'فواد جاوید (Fawad4real) · CC BY-SA 4.0 · Wikimedia Commons',
     source: 'https://commons.wikimedia.org/wiki/File:Faisal_Mosque_islamabad_01.jpg',

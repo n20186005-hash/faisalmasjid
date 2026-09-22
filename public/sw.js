@@ -8,6 +8,7 @@ const OFFLINE_URL = '/';
 
 const PRECACHE = [
   '/',
+  '/en/',
   '/site.webmanifest',
   '/favicon.svg',
   '/apple-touch-icon.png',

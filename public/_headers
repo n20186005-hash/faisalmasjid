@@ -1,5 +1,10 @@
 # Cloudflare Workers static assets — سیکیورٹی ہیڈرز
 # HTTP → HTTPS کی منتقلی کے لیے Cloudflare ڈیش بورڈ میں "Always Use HTTPS" فعال رکھیں۔
+# www → non-www (اور http → https) کی 301 ری ڈائریکٹ کے لیے Cloudflare ڈیش بورڈ میں
+# "Redirect Rules" بنائیں (Workers static assets ڈومین لیول ری ڈائریکٹ سپورٹ نہیں کرتے):
+#   Rule: (http.host eq "www.faisalmasjid.com") -> 301 https://faisalmasjid.com${path}
+#   Rule: (starts_with(http.request.uri, "http://")) -> 301 https://${host}${path}  (یا Always Use HTTPS)
+# کنونیکل ٹیگ پہلے سے non-www پر سیٹ ہے (astro.config.mjs)، ری ڈائریکٹ سے وزن ضائع نہیں ہوگا۔
 
 /*
   X-Content-Type-Options: nosniff

@@ -1,0 +1,142 @@
+---
+import SectionHeading from './SectionHeading.astro';
+const { lang = 'ur' } = Astro.props;
+const en = lang === 'en';
+const t = {
+  eyebrow: en ? 'Plan around the weather' : 'موسم کے مطابق منصوبہ بنائیں',
+  title: en ? 'Live weather at Faisal Mosque, Islamabad' : 'فیصل مسجد، اسلام آباد کا براہِ راست موسم',
+  lead: en
+    ? 'Current conditions and the next seven days, so you can decide whether to carry an umbrella or plan an outdoor walk.'
+    : 'موجودہ حالت اور اگلے سات دن، تاکہ آپ طے کر سکیں کہ چھتری ساتھ لے جائیں یا کھلی سیر کا منصوبہ بنائیں۔',
+  now: en ? 'Right now' : 'فی الحال',
+  feels: en ? 'Feels like' : 'محسوس',
+  humidity: en ? 'Humidity' : 'نمی',
+  wind: en ? 'Wind' : 'ہوا',
+  today: en ? 'Today' : 'آج',
+  high: en ? 'High' : 'زیادہ',
+  low: en ? 'Low' : 'کم',
+  rain: en ? 'Rain chance' : 'بارش کا امکان',
+  forecast: en ? 'Next 7 days' : 'اگلے سات دن',
+  tips: en ? 'Travel tips' : 'سفری مشورہ',
+  updated: en ? 'Updated' : 'اپ ڈیٹ',
+  loading: en ? 'Loading current weather…' : 'موجودہ موسم لوڈ ہو رہا ہے…',
+  unavailable: en
+    ? 'Live weather is not available right now. Islamabad has hot summers, a monsoon from late June to September, and mild, foggy winters — plan accordingly.'
+    : 'براہِ راست موسم اس وقت دستیاب نہیں۔ اسلام آباد میں گرم گریاں، جون کے آخر سے ستمبر تک مون سون اور ہلکی، دھند والی سردیاں ہوتی ہیں — اسی کے مطابق منصوبہ بنائیں۔',
+};
+---
+<section id="weather" class="section section-white weather">
+  <div class="container">
+    <SectionHeading eyebrow={t.eyebrow} title={t.title} lead={t.lead} />
+    <div class="weather-card" data-lang={lang} data-url={`/api/weather?lang=${lang}`}>
+      <p class="weather-loading">{t.loading}</p>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const LABELS = {
+      ur: {
+        now: 'فی الحال', feels: 'محسوس', humidity: 'نمی', wind: 'ہوا', today: 'آج',
+        high: 'زیادہ', low: 'کم', rain: 'بارش کا امکان', forecast: 'اگلے سات دن',
+        tips: 'سفری مشورہ', updated: 'اپ ڈیٹ', unavailable:
+          'براہِ راست موسم اس وقت دستیاب نہیں۔ اسلام آباد میں گرم گریاں، جون کے آخر سے ستمبر تک مون سون اور ہلکی، دھند والی سردیاں ہوتی ہیں — اسی کے مطابق منصوبہ بنائیں۔',
+      },
+      en: {
+        now: 'Right now', feels: 'Feels like', humidity: 'Humidity', wind: 'Wind', today: 'Today',
+        high: 'High', low: 'Low', rain: 'Rain chance', forecast: 'Next 7 days',
+        tips: 'Travel tips', updated: 'Updated', unavailable:
+          'Live weather is not available right now. Islamabad has hot summers, a monsoon from late June to September, and mild, foggy winters — plan accordingly.',
+      },
+    };
+    const cards = document.querySelectorAll('.weather-card');
+    cards.forEach(async (card) => {
+      const lang = card.getAttribute('data-lang') === 'en' ? 'en' : 'ur';
+      const L = LABELS[lang];
+      try {
+        const res = await fetch(card.getAttribute('data-url'), { headers: { Accept: 'application/json' } });
+        const data = await res.json();
+        if (!data || data.ok === false) throw new Error('unavailable');
+        card.innerHTML = render(data, L);
+      } catch {
+        card.innerHTML = `<p class="weather-error">${L.unavailable}</p>`;
+      }
+    });
+
+    function render(d, L) {
+      const c = d.current;
+      const t = d.today;
+      const hintHtml = (d.hints || []).map((h) => `<li><span class="hint-ic">${h.icon}</span><span>${h.text}</span></li>`).join('');
+      const dayHtml = (d.daily || []).map((day) => `
+        <article class="day">
+          <div class="day-name">${day.label}</div>
+          <div class="day-sym" aria-hidden="true">${day.symbol}</div>
+          <div class="day-temp"><strong>${day.tmax}°</strong> / ${day.tmin}°</div>
+          <div class="day-rain">${day.rainProb != null ? '🌧️ ' + day.rainProb + '%' : ''}</div>
+        </article>`).join('');
+      return `
+        <div class="weather-grid">
+          <div class="wx-now card">
+            <div class="wx-now-head"><span>${L.now}</span><span class="wx-sym" aria-hidden="true">${c.symbol}</span></div>
+            <div class="wx-temp">${c.temp}<span class="wx-deg">°</span></div>
+            <div class="wx-cond">${c.text}</div>
+            <ul class="wx-meta">
+              <li>${L.feels} <strong>${c.apparent}°</strong></li>
+              <li>${L.humidity} <strong>${c.humidity}%</strong></li>
+              <li>${L.wind} <strong>${c.wind} km/h</strong></li>
+            </ul>
+          </div>
+          <div class="wx-today card">
+            <div class="wx-now-head"><span>${L.today}</span><span class="wx-sym" aria-hidden="true">${t.symbol}</span></div>
+            <div class="wx-today-temp"><span>${L.high} <strong>${t.tmax}°</strong></span><span>${L.low} <strong>${t.tmin}°</strong></span></div>
+            <div class="wx-cond">${t.text}</div>
+            <ul class="wx-meta">
+              <li>${L.rain} <strong>${t.rainProb != null ? t.rainProb + '%' : '—'}</strong></li>
+            </ul>
+          </div>
+          <div class="wx-tips card">
+            <div class="wx-now-head"><span>${L.tips}</span></div>
+            <ul class="wx-hints">${hintHtml}</ul>
+          </div>
+        </div>
+        <h3 class="forecast-title">${L.forecast}</h3>
+        <div class="forecast-row">${dayHtml}</div>
+        <p class="weather-updated">${L.updated}: ${new Date(d.updated).toLocaleString(lang === 'en' ? 'en-US' : 'ur-PK')}</p>
+      `;
+    }
+  })();
+</script>
+
+<style>
+  .weather-card { margin-top: 36px; }
+  .weather-loading, .weather-error { color: #4d625b; font-size: 1rem; padding: 18px 0; }
+  .weather-grid { display: grid; grid-template-columns: 1.1fr 1fr 1.1fr; gap: 18px; }
+  .wx-now, .wx-today, .wx-tips { padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: #fffdf8; }
+  .wx-now-head { display: flex; justify-content: space-between; align-items: center; color: #8f6d2f; font-weight: 800; font-size: .82rem; letter-spacing: .03em; }
+  .wx-sym { font-size: 1.5rem; }
+  .wx-temp { font-size: 3.4rem; line-height: 1; font-weight: 800; letter-spacing: -.04em; margin: 10px 0 4px; }
+  .wx-deg { font-size: .5em; vertical-align: super; }
+  .wx-cond { color: #3e5750; font-size: .95rem; }
+  .wx-meta { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 6px; color: #566b63; font-size: .88rem; }
+  .wx-today-temp { display: flex; gap: 18px; margin: 12px 0 4px; font-size: 1.05rem; color: #3e5750; }
+  .wx-hints { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 12px; }
+  .wx-hints li { display: flex; gap: 10px; align-items: flex-start; color: #3e5750; font-size: .9rem; line-height: 1.6; }
+  .hint-ic { font-size: 1.15rem; flex: 0 0 auto; }
+  .forecast-title { margin: 34px 0 14px; font-size: 1.15rem; color: var(--ink); }
+  .forecast-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+  .day { padding: 16px 10px; border: 1px solid var(--line); border-radius: 16px; background: #fffdf8; text-align: center; }
+  .day-name { font-size: .72rem; color: #8f6d2f; font-weight: 700; }
+  .day-sym { font-size: 1.6rem; margin: 6px 0; }
+  .day-temp { font-size: .9rem; color: #3e5750; }
+  .day-temp strong { color: var(--ink); }
+  .day-rain { font-size: .72rem; color: #6b7c75; margin-top: 4px; }
+  .weather-updated { margin-top: 18px; color: #8a958e; font-size: .76rem; }
+  @media (max-width: 1000px) {
+    .weather-grid { grid-template-columns: 1fr; }
+    .forecast-row { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .forecast-row { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>

@@ -1,33 +1,65 @@
 ---
-import { sourceLinks } from '../data/site';
+import { sourceLinks, sourceLinksEn } from '../data/site';
+const { lang = 'ur' } = Astro.props;
+const en = lang === 'en';
+const links = en ? sourceLinksEn : sourceLinks;
+const copy = {
+  disclaimer: en
+    ? 'This website is an independent, non-profit visitor information project and is not affiliated with any government body, mosque administration or official organisation.'
+    : 'یہ ویب سائٹ ایک آزاد، غیر منافع بخش سیاحتی معلوماتی رہنما منصوبہ ہے اور کسی سرکاری ادارے، مسجد انتظامیہ یا سرکاری تنظیم سے منسلک نہیں۔',
+  principlesTitle: en ? 'Editorial principles' : 'معلوماتی اصول',
+  principles: en
+    ? 'Information is cross-checked against public material from the Capital Development Authority, the Islamabad Capital Territory administration and the Pakistan Tourism Development Corporation, among other credible sources. No commercial recommendation is included.'
+    : 'اس ویب سائٹ کی معلومات کو اسلام آباد کیپٹل ڈویلپمنٹ اتھارٹی، اسلام آباد کیپیٹل ٹریٹری انتظامیہ اور پاکستان ٹورزم ڈویلپمنٹ کارپوریشن کے دستیاب عوامی مواد سمیت معتبر ذرائع سے تقابل کیا گیا ہے۔ کوئی تجارتی سفارش شامل نہیں۔',
+  pagesTitle: en ? 'Key pages' : 'اہم صفحات',
+  sourcesLabel: en ? 'Public sources' : 'عوامی ماخذ',
+  credits: en
+    ? 'Image credits: all photographs shown remain the property of their original photographers and are used under their respective free licences.'
+    : 'تصویری حقوق: اس ویب سائٹ پر دکھائی جانے والی تمام تصاویر کے حقوق ان کے اصل فوٹوگرافرز کے پاس ہیں؛ استعمال متعلقہ آزاد اجازت ناموں کے تحت ہے۔',
+  copyright: en ? '© 2026 Faisal Mosque visitor guide. All rights reserved.' : '© 2026 فیصل مسجد رہنما۔ جملہ حقوق محفوظ ہیں۔',
+};
+const pages = en
+  ? [
+      ['Privacy policy', '/privacy/'],
+      ['Terms of use', '/terms/'],
+      ['Cookie settings', '/cookies/'],
+      ['Research method', '/en/#sources'],
+      ['Official sources', '/en/#references'],
+    ]
+  : [
+      ['رازداری کی پالیسی', '/privacy/'],
+      ['استعمال کی شرائط', '/terms/'],
+      ['کوکی ترتیبات', '/cookies/'],
+      ['تحقیقی طریقہ', '/#sources'],
+      ['سرکاری ماخذ', '/#references'],
+    ];
 ---
 <footer class="footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <img src="/logo.svg" alt="فیصل مسجد رہنما" width="260" height="75" />
-      <p>یہ ویب سائٹ ایک آزاد، غیر منافع بخش سیاحتی معلوماتی رہنما منصوبہ ہے اور کسی سرکاری ادارے، مسجد انتظامیہ یا سرکاری تنظیم سے منسلک نہیں۔</p>
+      <img src="/logo.svg" alt={en ? 'Faisal Mosque visitor guide' : 'فیصل مسجد رہنما'} width="260" height="75" />
+      <p>{copy.disclaimer}</p>
     </div>
     <div>
-      <h2>معلوماتی اصول</h2>
-      <p>اس ویب سائٹ کی معلومات کو اسلام آباد کیپٹل ڈویلپمنٹ اتھارٹی، اسلام آباد کیپیٹل ٹیریٹری انتظامیہ اور پاکستان ٹورزم ڈویلپمنٹ کارپوریشن کے دستیاب عوامی مواد سمیت معتبر ذرائع سے تقابل کیا گیا ہے۔ کوئی تجارتی سفارش شامل نہیں۔</p>
+      <h2>{copy.principlesTitle}</h2>
+      <p>{copy.principles}</p>
     </div>
     <div>
-      <h2>اہم صفحات</h2>
+      <h2>{copy.pagesTitle}</h2>
       <ul>
-        <li><a href="/privacy/">رازداری کی پالیسی</a></li>
-        <li><a href="/terms/">استعمال کی شرائط</a></li>
-        <li><a href="/cookies/">کوکی ترتیبات</a></li>
-        <li><a href="/#sources">تحقیقی طریقہ</a></li>
-        <li><a href="/#references">سرکاری ماخذ</a></li>
+        {pages.map(([label, href]) => <li><a href={href}>{label}</a></li>)}
       </ul>
+      <p class="lang-row">
+        <a href={en ? '/' : '/en/'} hreflang={en ? 'ur-PK' : 'en-US'} rel="alternate">{en ? 'اردو میں پڑھیں' : 'Read in English'}</a>
+      </p>
     </div>
   </div>
-  <div class="container source-row" aria-label="عوامی ماخذ">
-    {sourceLinks.map((source) => <a href={source.href} target="_blank" rel="noopener noreferrer">{source.label}</a>)}
+  <div class="container source-row" aria-label={copy.sourcesLabel}>
+    {links.map((source) => <a href={source.href} target="_blank" rel="noopener noreferrer">{source.label}</a>)}
   </div>
   <div class="container footer-bottom">
-    <p>تصویری حقوق: اس ویب سائٹ پر دکھائی جانے والی تمام تصاویر کے حقوق ان کے اصل فوٹوگرافرز کے پاس ہیں؛ استعمال متعلقہ آزاد اجازت ناموں کے تحت ہے۔</p>
-    <p>© 2026 فیصل مسجد رہنما۔ جملہ حقوق محفوظ ہیں۔</p>
+    <p>{copy.credits}</p>
+    <p>{copy.copyright}</p>
   </div>
 </footer>
 
@@ -44,5 +76,7 @@ li a:hover { color:#d8bc7b; }
 .source-row a { color:#a9bbb2; font-size:.8rem; text-underline-offset:4px; }
 .footer-bottom { border-top:1px solid rgba(255,255,255,.1); margin-top:24px; padding-top:20px; display:flex; justify-content:space-between; gap:24px; }
 .footer-bottom p { font-size:.78rem; }
+.lang-row { margin: 14px 0 0 !important; }
+.lang-row a { color:#d8bc7b; text-decoration:none; font-size:.85rem; font-weight:700; }
 @media(max-width:850px){ .footer-grid{grid-template-columns:1fr;gap:28px}.footer-bottom{flex-direction:column}.source-row{display:grid} }
 </style>

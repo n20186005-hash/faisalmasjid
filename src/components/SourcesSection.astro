@@ -2,37 +2,44 @@
 import SectionHeading from './SectionHeading.astro';
 import { govtTourismUrl, siteMeta, sources } from '../data/site';
 
-const updated = 'ستمبر 2026';
+const { lang = 'ur' } = Astro.props;
+const en = lang === 'en';
+const updated = en ? 'September 2026' : 'ستمبر 2026';
+const note = en
+  ? `The public listing shows a visitor rating of ${siteMeta.rating} / 5 from roughly ${siteMeta.reviewCount.toLocaleString('en-US')} reviews (matched September 2026); these values change over time, so verify them on the day of travel.`
+  : `گوگل کی عوامی فہرست میں درج زائرین کی درجہ بندی ${siteMeta.rating} / 5 اور تبصروں کی تعداد تقریباً ${siteMeta.reviewCount.toLocaleString('en-US')} ہے (ستمبر 2026 کی مطابقت)؛ یہ اقدار تبدیل ہوتی رہتی ہیں، اس لیے سفر کے دن تازہ تصدیق کریں۔`;
 ---
 <section id="references" class="section section-white references">
   <div class="container">
     <SectionHeading
-      eyebrow="حوالہ جاتی ماخذ"
-      title="سرکاری اور معتبر ذرائع — براہِ راست روابط"
-      latin="Sources & official references for Faisal Masjid, Islamabad"
-      lead="یہ صفحہ کسی سرکاری ادارے یا مسجد انتظامیہ کا نمائندہ نہیں۔ ہر عملی معلومات کو درج ذیل عوامی اور قابلِ تصدیق ذرائع سے تقابل کے بعد پیش کیا گیا ہے۔"
+      eyebrow={en ? 'Sources & references' : 'حوالہ جاتی ماخذ'}
+      title={en ? 'Official and credible sources — direct links' : 'سرکاری اور معتبر ذرائع — براہِ راست روابط'}
+      latin={en ? undefined : 'Sources & official references for Faisal Masjid, Islamabad'}
+      lead={en
+        ? 'This page does not represent any government body or mosque administration. Every practical detail below has been cross-checked against the following public, verifiable sources.'
+        : 'یہ صفحہ کسی سرکاری ادارے یا مسجد انتظامیہ کا نمائندہ نہیں۔ ہر عملی معلومات کو درج ذیل عوامی اور قابلِ تصدیق ذرائع سے تقابل کے بعد پیش کیا گیا ہے۔'}
     />
     <div class="source-list">
       {sources.map((source) => (
         <article class="source-item">
           <h3>
-            <a href={source.href} target="_blank" rel="noopener noreferrer">{source.label}</a>
+            <a href={source.href} target="_blank" rel="noopener noreferrer">{en ? source.labelEn : source.label}</a>
           </h3>
-          <p>{source.note}</p>
+          <p>{en ? source.noteEn : source.note}</p>
           <code dir="ltr" lang="en">{source.href.replace(/^https:\/\//, '')}</code>
         </article>
       ))}
     </div>
     <div class="reference-notes">
       <p>
-        سرکاری اپ ڈیٹس اور علاقائی سیاحتی معلومات کے لیے
-        <a href={govtTourismUrl} target="_blank" rel="noopener noreferrer">پاکستان ٹورزم ڈویلپمنٹ کارپوریشن کا سرکاری پورٹل</a>
-        اور اسلام آباد کی <a href="https://www.cda.gov.pk/" target="_blank" rel="noopener noreferrer">کیپٹل ڈویلپمنٹ اتھارٹی</a> کی ویب سائٹ دیکھیں۔
+        {en ? 'For official updates and regional tourism information, see the ' : 'سرکاری اپ ڈیٹس اور علاقائی سیاحتی معلومات کے لیے '}
+        <a href={govtTourismUrl} target="_blank" rel="noopener noreferrer">{en ? 'Pakistan Tourism Development Corporation portal' : 'پاکستان ٹورزم ڈویلپمنٹ کارپوریشن کا سرکاری پورٹل'}</a>
+        {en ? ' and the ' : ' اور اسلام آباد کی '}
+        <a href="https://www.cda.gov.pk/" target="_blank" rel="noopener noreferrer">{en ? 'Capital Development Authority' : 'کیپٹل ڈویلپمنٹ اتھارٹی'}</a>
+        {en ? ' website.' : ' کی ویب سائٹ دیکھیں۔'}
       </p>
-      <p>
-        گوگل کی عوامی فہرست میں درج زائرین کی درجہ بندی {siteMeta.rating} / 5 اور تبصروں کی تعداد تقریباً {siteMeta.reviewCount.toLocaleString('en-US')} ہے (ستمبر 2026 کی مطابقت)؛ یہ اقدار تبدیل ہوتی رہتی ہیں، اس لیے سفر کے دن تازہ تصدیق کریں۔
-      </p>
-      <p class="micro">آخری ادارتی جائزہ: {updated}۔ فون نمبر، رسائی، نماز کے اوقات اور سکیورٹی انتظامات بغیر پیشگی اطلاع کے بدل سکتے ہیں۔</p>
+      <p>{note}</p>
+      <p class="micro">{en ? 'Last editorial review: ' : 'آخری ادارتی جائزہ: '}{updated}{en ? '. Phone numbers, access, prayer timings and security arrangements can change without notice.' : '۔ فون نمبر، رسائی، نماز کے اوقات اور سکیورٹی انتظامات بغیر پیشگی اطلاع کے بدل سکتے ہیں۔'}</p>
     </div>
   </div>
 </section>

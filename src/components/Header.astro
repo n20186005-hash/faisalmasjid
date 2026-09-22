@@ -1,26 +1,41 @@
 ---
-const { compact = false } = Astro.props;
+const { compact = false, lang = 'ur' } = Astro.props;
+const en = lang === 'en';
+const nav = en
+  ? [
+      ['History', '/en/#history'],
+      ['Architecture', '/en/#architecture'],
+      ['Plan a visit', '/en/#visit'],
+      ['Getting here', '/en/#transport'],
+      ['Facilities', '/en/#facilities'],
+      ['FAQ', '/en/#faq'],
+    ]
+  : [
+      ['تاریخ', '/#history'],
+      ['معماری', '/#architecture'],
+      ['دورہ', '/#visit'],
+      ['رسائی', '/#transport'],
+      ['سہولیات', '/#facilities'],
+      ['سوالات', '/#faq'],
+    ];
+const navLabel = en ? 'Primary navigation' : 'مرکزی نیویگیشن';
 ---
 <header class:list={["site-header", { compact }]}>
   <div class="container header-inner">
-    <a class="brand" href="/" aria-label="فیصل مسجد رہنما — ہوم">
+    <a class="brand" href={en ? '/en/' : '/'} aria-label={en ? 'Faisal Mosque visitor guide — home' : 'فیصل مسجد رہنما — ہوم'}>
       <svg viewBox="0 0 64 64" aria-hidden="true">
         <rect width="64" height="64" rx="14" fill="#0b211c" />
         <path d="M14 51V14M50 51V14" stroke="#d8bc7b" stroke-width="3.5" stroke-linecap="round" />
         <path d="M18 50 32 21l14 29Z" fill="#f4efe2" stroke="#d8bc7b" stroke-width="2.5" stroke-linejoin="round" />
         <path d="M11 52h42" stroke="#7a9b8c" stroke-width="2.5" stroke-linecap="round" />
       </svg>
-      <span><strong>فیصل مسجد</strong><small>آزاد معلوماتی رہنما</small></span>
+      <span><strong>{en ? 'Faisal Mosque' : 'فیصل مسجد'}</strong><small>{en ? 'Independent visitor guide' : 'آزاد معلوماتی رہنما'}</small></span>
     </a>
-    <nav aria-label="مرکزی نیویگیشن">
-      <a href="/#history">تاریخ</a>
-      <a href="/#architecture">معماری</a>
-      <a href="/#visit">دورہ</a>
-      <a href="/#transport">رسائی</a>
-      <a href="/#facilities">سہولیات</a>
-      <a href="/#faq">سوالات</a>
+    <nav aria-label={navLabel}>
+      {nav.map(([label, href]) => <a href={href}>{label}</a>)}
     </nav>
-    <a class="header-cta" href="/#map">نقشہ دیکھیں</a>
+    <a class="lang-switch" href={en ? '/' : '/en/'} hreflang={en ? 'ur-PK' : 'en-US'} rel="alternate">{en ? 'اردو' : 'EN'}</a>
+    <a class="header-cta" href={en ? '/en/#map' : '/#map'}>{en ? 'View map' : 'نقشہ دیکھیں'}</a>
   </div>
 </header>
 
@@ -35,6 +50,8 @@ const { compact = false } = Astro.props;
 nav { display: flex; align-items: center; gap: clamp(10px, 2vw, 24px); margin-inline-start: auto; }
 nav a { color: #334c44; text-decoration: none; font-size: .9rem; font-weight: 700; white-space: nowrap; }
 nav a:hover { color: #8a682d; }
+.lang-switch { margin-inline-start: 12px; padding: 6px 12px; border: 1px solid rgba(16,36,31,.22); border-radius: 999px; color: #334c44; text-decoration: none; font-size: .8rem; font-weight: 800; white-space: nowrap; }
+.lang-switch:hover { border-color: #8a682d; color: #8a682d; }
 .header-cta { text-decoration: none; color: white; background: #0b211c; border-radius: 999px; padding: 9px 16px; font-weight: 800; font-size: .86rem; white-space: nowrap; }
 @media (max-width: 950px) { nav { display: none; } .header-cta { margin-inline-start: auto; } }
 @media (max-width: 480px) { .brand { min-width: 0; } .brand small { display: none; } .header-cta { display: none; } }

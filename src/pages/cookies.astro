@@ -1,7 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withSiteName } from '../data/site';
 ---
-<BaseLayout title="کوکی ترتیبات — فیصل مسجد رہنما" description="فیصل مسجد رہنما کی کوکی اور تجزیاتی رضامندی براہِ راست منظم کریں؛ ضروری، تجزیاتی، ترجیحی اور مارکیٹنگ زمروں کی واضح وضاحت۔" compactHeader={true}>
+export const prerender = false;
+
+<BaseLayout title={withSiteName('کوکی ترتیبات')} description="فیصل مسجد رہنما کی کوکی اور تجزیاتی رضامندی براہِ راست منظم کریں؛ ضروری، تجزیاتی، ترجیحی اور مارکیٹنگ زمروں کی واضح وضاحت۔" compactHeader={true}>
   <section class="legal-hero"><div class="container"><span class="eyebrow">آپ کا اختیار</span><h1>کوکی ترتیبات</h1><p>آخری اپ ڈیٹ: اگست 2026</p></div></section>
   <section class="section"><div class="container cookie-layout">
     <div class="cookie-intro">

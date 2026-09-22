@@ -1,7 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withSiteName } from '../data/site';
 ---
-<BaseLayout title="رازداری کی پالیسی — فیصل مسجد رہنما" description="فیصل مسجد رہنما کی رازداری کی پالیسی: کم سے کم ڈیٹا، تجزیاتی رضامندی، گوگل نقشہ، حقوق اور رابطہ سے متعلق اصول۔" compactHeader={true}>
+export const prerender = false;
+
+<BaseLayout title={withSiteName('رازداری کی پالیسی')} description="فیصل مسجد رہنما کی رازداری کی پالیسی: کم سے کم ڈیٹا، تجزیاتی رضامندی، گوگل نقشہ، حقوق اور رابطہ سے متعلق اصول۔" compactHeader={true}>
   <section class="legal-hero">
     <div class="container"><span class="eyebrow">قانونی معلومات</span><h1>رازداری کی پالیسی</h1><p>آخری اپ ڈیٹ: اگست 2026</p></div>
   </section>

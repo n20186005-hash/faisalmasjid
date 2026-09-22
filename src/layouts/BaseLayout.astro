@@ -11,14 +11,40 @@ interface Props {
   ogImageAlt?: string;
   jsonLd?: Record<string, unknown>[];
   compactHeader?: boolean;
+  /** صفحے کی زبان — طے شدہ اردو */
+  lang?: 'ur' | 'en';
+  /** دوسری زبان میں اسی صفحے کا راستہ (مثلاً /en/ یا /) — hreflang کے لیے */
+  alternatePath?: string;
 }
 
-const { title, description, ogImage, ogImageAlt, jsonLd = [], compactHeader = false } = Astro.props;
+const {
+  title,
+  description,
+  ogImage,
+  ogImageAlt,
+  jsonLd = [],
+  compactHeader = false,
+  lang = 'ur',
+  alternatePath,
+} = Astro.props;
+const isEnglish = lang === 'en';
+const dir = isEnglish ? 'ltr' : 'rtl';
+const locale = isEnglish ? 'en_US' : 'ur_PK';
+const altLocale = isEnglish ? 'ur_PK' : 'en_US';
 const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const alternateUrl = Astro.site && alternatePath ? new URL(alternatePath, Astro.site).href : undefined;
+const hreflangLinks = canonicalUrl && alternateUrl
+  ? [
+      { hreflang: isEnglish ? 'en-US' : 'ur-PK', href: canonicalUrl },
+      { hreflang: isEnglish ? 'ur-PK' : 'en-US', href: alternateUrl },
+      { hreflang: 'x-default', href: isEnglish ? alternateUrl : canonicalUrl },
+    ]
+  : [];
+const appTitle = isEnglish ? 'Faisal Mosque' : 'فیصل مسجد';
 const ogImageUrl = ogImage?.startsWith('http') ? ogImage : (ogImage && Astro.site ? new URL(ogImage, Astro.site).href : undefined);
 ---
 <!doctype html>
-<html lang="ur" dir="rtl">
+<html lang={lang} dir={dir}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -33,15 +59,17 @@ const ogImageUrl = ogImage?.startsWith('http') ? ogImage : (ogImage && Astro.sit
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="فیصل مسجد" />
+    <meta name="apple-mobile-web-app-title" content={appTitle} />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="application-name" content="فیصل مسجد" />
+    <meta name="application-name" content={appTitle} />
     <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin />
     <link rel="dns-prefetch" href="https://upload.wikimedia.org" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    {hreflangLinks.map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.href} />)}
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="ur_PK" />
-    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale" content={locale} />
+    <meta property="og:locale:alternate" content={altLocale} />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -82,10 +110,10 @@ const ogImageUrl = ogImage?.startsWith('http') ? ogImage : (ogImage && Astro.sit
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#main-content">مرکزی مواد پر جائیں</a>
-    <Header compact={compactHeader} />
+    <a class="skip-link" href="#main-content">{isEnglish ? 'Skip to main content' : 'مرکزی مواد پر جائیں'}</a>
+    <Header compact={compactHeader} lang={lang} />
     <main id="main-content"><slot /></main>
-    <Footer />
+    <Footer lang={lang} />
     <script is:inline>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
