@@ -1,4 +1,3 @@
-import type { APIRoute } from 'astro';
 import {
   WEATHER_LAT,
   WEATHER_LON,
@@ -7,10 +6,10 @@ import {
   buildHints,
   formatDayLabel,
   type Lang,
-} from '../../lib/weather';
+} from './weather';
 
 // یہ اینڈ پوائنٹ سرور (Cloudflare Workers) پر چلتا ہے اور کیش کیا جاتا ہے۔
-export const prerender = false;
+
 
 interface OpenMeteoResponse {
   current?: {
@@ -34,17 +33,17 @@ interface OpenMeteoResponse {
   };
 }
 
-export const GET: APIRoute = async ({ request, url }) => {
+export async function weatherResponse(_request: Request, url: URL) {
   const langParam = url.searchParams.get('lang');
   const lang: Lang = langParam === 'en' ? 'en' : 'ur';
 
   const apiUrl = buildWeatherUrl(WEATHER_LAT, WEATHER_LON, 7);
 
   // سرور سائیڈ کیش (Cloudflare Workers کا Cache API) — بہترین رفتار اور کم درخواستی بوجھ۔
-  const cacheKey = new Request(request.url);
+  const cacheKey = new Request(new URL('/api/weather?lang=' + lang, url.origin));
   try {
-    if (typeof caches !== 'undefined' && caches.default) {
-      const cached = await caches.default.match(cacheKey);
+    if (typeof caches !== 'undefined' && (caches as CacheStorage & { default?: Cache }).default) {
+      const cached = await (caches as CacheStorage & { default: Cache }).default.match(cacheKey);
       if (cached) return cached;
     }
   } catch {
@@ -59,7 +58,6 @@ export const GET: APIRoute = async ({ request, url }) => {
       signal: controller.signal,
       headers: { Accept: 'application/json' },
       // Cloudflare ایج کیش ہدایت (صرف Workers ماحول میں کارگر)
-      cf: { cacheTtl: 600, cacheEverything: true } as Record<string, unknown>,
     });
     if (!res.ok) throw new Error(`upstream ${res.status}`);
     data = (await res.json()) as OpenMeteoResponse;
@@ -78,7 +76,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
   const cur = data.current;
   const daily = data.daily;
-  if (!cur || !daily) {
+  if (!cur || !daily || !Array.isArray(daily.time) || !daily.time.length || !Array.isArray(daily.weather_code) || !Array.isArray(daily.temperature_2m_max) || !Array.isArray(daily.temperature_2m_min) || !daily.time.every(v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) || [daily.weather_code,daily.temperature_2m_max,daily.temperature_2m_min].some(a => a.length < daily.time.length || !a.every(Number.isFinite)) || ![cur.temperature_2m,cur.apparent_temperature,cur.relative_humidity_2m,cur.weather_code,cur.wind_speed_10m,cur.precipitation].every(Number.isFinite)) {
     return new Response(
       JSON.stringify({ ok: false, message: lang === 'en' ? 'Weather data incomplete.' : 'موسم کا ڈیٹا نامکمل ہے۔' }),
       { status: 200, headers: { 'content-type': 'application/json; charset=utf-8' } },
@@ -150,8 +148,8 @@ export const GET: APIRoute = async ({ request, url }) => {
 
   // کیش میں رکھیں (best-effort، غیر مطابقتی)
   try {
-    if (typeof caches !== 'undefined' && caches.default) {
-      void caches.default.put(cacheKey, response.clone());
+    if (typeof caches !== 'undefined' && (caches as CacheStorage & { default?: Cache }).default) {
+      void (caches as CacheStorage & { default: Cache }).default.put(cacheKey, response.clone());
     }
   } catch {
     /* نظر انداز */

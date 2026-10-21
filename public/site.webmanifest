@@ -1,7 +1,7 @@
 {
   "name": "فیصل مسجد اسلام آباد — سیاحتی رہنما",
   "short_name": "فیصل مسجد",
-  "description": "فیصل مسجد (Faisal Masjid) اسلام آباد کا آزاد، غیر منافع بخش اردو سیاحتی رہنما: تاریخ، معماری، مقام، نقشہ، رسائی اور عام سوالات۔",
+  "description": "فیصل مسجد اسلام آباد کا آزاد اردو معلوماتی رہنما: تاریخ، معماری، مقام اور دورے کی تصدیق کی حدود۔",
   "lang": "ur",
   "dir": "rtl",
   "start_url": "/",
@@ -11,7 +11,11 @@
   "orientation": "any",
   "background_color": "#fbf8ef",
   "theme_color": "#0b211c",
-  "categories": ["travel", "education", "reference"],
+  "categories": [
+    "travel",
+    "education",
+    "reference"
+  ],
   "icons": [
     {
       "src": "/icons/icon-192.png",

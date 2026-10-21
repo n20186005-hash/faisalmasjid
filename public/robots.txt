@@ -1,5 +1,3 @@
 User-agent: *
 Allow: /
-
-# نقشۂِ سائٹ (site مقرر ہونے پر خودکار طور پر بنتا ہے)
 Sitemap: https://faisalmasjid.com/sitemap-index.xml
