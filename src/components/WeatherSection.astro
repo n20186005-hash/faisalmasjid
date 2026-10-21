@@ -119,35 +119,35 @@ const t = {
   })();
 </script>
 
-<style>
+<style is:global>
   .weather-card { margin-top: 36px; }
-  .weather-loading, .weather-error { color: #4d625b; font-size: 1rem; padding: 18px 0; }
-  .weather-grid { display: grid; grid-template-columns: 1.1fr 1fr 1.1fr; gap: 18px; }
-  .wx-now, .wx-today, .wx-tips { padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: #fffdf8; }
-  .wx-now-head { display: flex; justify-content: space-between; align-items: center; color: #8f6d2f; font-weight: 800; font-size: .82rem; letter-spacing: .03em; }
-  .wx-sym { font-size: 1.5rem; }
-  .wx-temp { font-size: 3.4rem; line-height: 1; font-weight: 800; letter-spacing: -.04em; margin: 10px 0 4px; }
-  .wx-deg { font-size: .5em; vertical-align: super; }
-  .wx-cond { color: #3e5750; font-size: .95rem; }
-  .wx-meta { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 6px; color: #566b63; font-size: .88rem; }
-  .wx-today-temp { display: flex; gap: 18px; margin: 12px 0 4px; font-size: 1.05rem; color: #3e5750; }
-  .wx-hints { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 12px; }
-  .wx-hints li { display: flex; gap: 10px; align-items: flex-start; color: #3e5750; font-size: .9rem; line-height: 1.6; }
-  .hint-ic { font-size: 1.15rem; flex: 0 0 auto; }
-  .forecast-title { margin: 34px 0 14px; font-size: 1.15rem; color: var(--ink); }
-  .forecast-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
-  .day { padding: 16px 10px; border: 1px solid var(--line); border-radius: 16px; background: #fffdf8; text-align: center; }
-  .day-name { font-size: .72rem; color: #8f6d2f; font-weight: 700; }
-  .day-sym { font-size: 1.6rem; margin: 6px 0; }
-  .day-temp { font-size: .9rem; color: #3e5750; }
-  .day-temp strong { color: var(--ink); }
-  .day-rain { font-size: .72rem; color: #6b7c75; margin-top: 4px; }
-  .weather-updated { margin-top: 18px; color: #8a958e; font-size: .76rem; }
+  .weather-card .weather-loading, .weather-card .weather-error { color: #4d625b; font-size: 1rem; padding: 18px 0; }
+  .weather-card .weather-grid { display: grid; grid-template-columns: 1.1fr 1fr 1.1fr; gap: 18px; }
+  .weather-card .wx-now, .weather-card .wx-today, .weather-card .wx-tips { padding: 26px; border: 1px solid var(--line); border-radius: 22px; background: #fffdf8; }
+  .weather-card .wx-now-head { display: flex; justify-content: space-between; align-items: center; color: #8f6d2f; font-weight: 800; font-size: .82rem; letter-spacing: .03em; }
+  .weather-card .wx-sym { font-size: 1.5rem; }
+  .weather-card .wx-temp { font-size: 3.4rem; line-height: 1; font-weight: 800; letter-spacing: -.04em; margin: 10px 0 4px; }
+  .weather-card .wx-deg { font-size: .5em; vertical-align: super; }
+  .weather-card .wx-cond { color: #3e5750; font-size: .95rem; }
+  .weather-card .wx-meta { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 6px; color: #566b63; font-size: .88rem; }
+  .weather-card .wx-today-temp { display: flex; gap: 18px; margin: 12px 0 4px; font-size: 1.05rem; color: #3e5750; }
+  .weather-card .wx-hints { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 12px; }
+  .weather-card .wx-hints li { display: flex; gap: 10px; align-items: flex-start; color: #3e5750; font-size: .9rem; line-height: 1.6; }
+  .weather-card .hint-ic { font-size: 1.15rem; flex: 0 0 auto; }
+  .weather-card .forecast-title { margin: 34px 0 14px; font-size: 1.15rem; color: var(--ink); }
+  .weather-card .forecast-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+  .weather-card .day { padding: 16px 10px; border: 1px solid var(--line); border-radius: 16px; background: #fffdf8; text-align: center; }
+  .weather-card .day-name { font-size: .72rem; color: #8f6d2f; font-weight: 700; }
+  .weather-card .day-sym { font-size: 1.6rem; margin: 6px 0; }
+  .weather-card .day-temp { font-size: .9rem; color: #3e5750; }
+  .weather-card .day-temp strong { color: var(--ink); }
+  .weather-card .day-rain { font-size: .72rem; color: #6b7c75; margin-top: 4px; }
+  .weather-card .weather-updated { margin-top: 18px; color: #8a958e; font-size: .76rem; }
   @media (max-width: 1000px) {
-    .weather-grid { grid-template-columns: 1fr; }
-    .forecast-row { grid-template-columns: repeat(4, 1fr); }
+    .weather-card .weather-grid { grid-template-columns: 1fr; }
+    .weather-card .forecast-row { grid-template-columns: repeat(4, 1fr); }
   }
   @media (max-width: 560px) {
-    .forecast-row { grid-template-columns: repeat(3, 1fr); }
+    .weather-card .forecast-row { grid-template-columns: repeat(3, 1fr); }
   }
 </style>
