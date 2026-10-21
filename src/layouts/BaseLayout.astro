@@ -5,6 +5,7 @@ import { SITE_NAME } from '../data/site';
 import '../styles/global.css';
 
 interface Props {
+  noindex?: boolean;
   title: string;
   description: string;
   ogImage?: string;
@@ -18,9 +19,10 @@ interface Props {
 }
 
 const {
+  noindex = false,
   title,
   description,
-  ogImage,
+  ogImage = "/images/photo-1.webp",
   ogImageAlt,
   jsonLd = [],
   compactHeader = false,
@@ -31,7 +33,7 @@ const isEnglish = lang === 'en';
 const dir = isEnglish ? 'ltr' : 'rtl';
 const locale = isEnglish ? 'en_US' : 'ur_PK';
 const altLocale = isEnglish ? 'ur_PK' : 'en_US';
-const canonicalUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const canonicalUrl = Astro.site ? new URL(noindex ? "/404/" : Astro.url.pathname, Astro.site).href : undefined;
 const alternateUrl = Astro.site && alternatePath ? new URL(alternatePath, Astro.site).href : undefined;
 const hreflangLinks = canonicalUrl && alternateUrl
   ? [
@@ -51,7 +53,7 @@ const ogImageUrl = ogImage?.startsWith('http') ? ogImage : (ogImage && Astro.sit
     <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#0b211c" />
     <meta name="description" content={description} />
-    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="robots" content={noindex ? "noindex,follow" : "index,follow,max-image-preview:large"} />
     <meta name="author" content={SITE_NAME} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
@@ -62,9 +64,6 @@ const ogImageUrl = ogImage?.startsWith('http') ? ogImage : (ogImage && Astro.sit
     <meta name="apple-mobile-web-app-title" content={appTitle} />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="application-name" content={appTitle} />
-    <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin />
-    <link rel="dns-prefetch" href="https://upload.wikimedia.org" />
-    <link rel="preconnect" href="https://www.googletagmanager.com" />
     {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     {hreflangLinks.map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.href} />)}
     <meta property="og:type" content="website" />
@@ -83,43 +82,15 @@ const ogImageUrl = ogImage?.startsWith('http') ? ogImage : (ogImage && Astro.sit
     {ogImageUrl && <meta name="twitter:image:alt" content={ogImageAlt ?? 'فیصل مسجد، اسلام آباد'} />}
     <title>{title}</title>
     {jsonLd.map((entry) => <script type="application/ld+json" set:html={JSON.stringify(entry)} />)}
-    <script is:inline>
-      (() => {
-        const STORAGE_KEY = 'faisal-masjid-consent-v1';
-        const GA_ID = 'G-HXM22WWPKP';
-        let loaded = false;
-        const loadAnalytics = () => {
-          if (loaded || document.querySelector('script[data-ga4-loader]')) return;
-          loaded = true;
-          window.dataLayer = window.dataLayer || [];
-          window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
-          window.gtag('js', new Date());
-          window.gtag('config', GA_ID, { anonymize_ip: true });
-          const script = document.createElement('script');
-          script.async = true;
-          script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
-          script.dataset.ga4Loader = 'true';
-          document.head.appendChild(script);
-        };
-        const apply = (preferences) => {
-          if (preferences && preferences.analytics === true) loadAnalytics();
-        };
-        try { apply(JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')); } catch (_) {}
-        window.addEventListener('cookie-consent-changed', (event) => apply(event.detail));
-      })();
-    </script>
+    <script is:inline defer src="/js/consent.js"></script>
+    <script is:inline defer src="/js/retire-sw.js"></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">{isEnglish ? 'Skip to main content' : 'مرکزی مواد پر جائیں'}</a>
     <Header compact={compactHeader} lang={lang} />
     <main id="main-content"><slot /></main>
     <Footer lang={lang} />
-    <script is:inline>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(() => {});
-        });
-      }
-    </script>
+    <aside id="cookie-banner" class="consent-banner hidden" aria-label={isEnglish?'Analytics choice':'تجزیاتی انتخاب'}><p>{isEnglish?'Optional analytics stays off until you allow it.':'اختیاری تجزیات اجازت دینے تک بند رہتے ہیں۔'}</p><button data-cookie-reject>{isEnglish?'Reject analytics':'تجزیات مسترد کریں'}</button><button data-cookie-accept>{isEnglish?'Allow analytics':'تجزیات کی اجازت'}</button><a href="/cookies/">{isEnglish?'Settings (Urdu)':'ترتیبات'}</a><p data-consent-status aria-live="polite"></p></aside>
+
   </body>
 </html>

@@ -5,8 +5,8 @@
  */
 
 /** فیصل مسجد، اسلام آباد کے طول و عرض (مارگلہ کی پہاڑیوں کے دامن میں) */
-export const WEATHER_LAT = 33.7299;
-export const WEATHER_LON = 73.0372;
+export const WEATHER_LAT = 33.730288;
+export const WEATHER_LON = 73.0369511;
 
 /** Open-Meteo فاریکاسٹ اینڈ پوائنٹ کا URL بنانا */
 export function buildWeatherUrl(lat: number, lon: number, days = 7): string {
@@ -104,8 +104,8 @@ export function buildHints(opts: {
       icon: '🕶️',
       text:
         lang === 'en'
-          ? 'No rain expected — a good day for outdoor photos around the courtyard.'
-          : 'بارش متوقع نہیں — صحن کے گرد کھلی تصاویر کے لیے موزوں دن۔',
+          ? 'This forecast suggests a lower rain chance; conditions and access can still change.'
+          : 'پیش گوئی میں بارش کا امکان کم ہے؛ موسم اور رسائی پھر بھی بدل سکتے ہیں۔',
     });
   }
 
@@ -124,8 +124,8 @@ export function buildHints(opts: {
       icon: '🌿',
       text:
         lang === 'en'
-          ? 'Mild conditions — comfortable for a relaxed walk and photography.'
-          : 'معتدل موسم — پرسکون سیر اور فوٹوگرافی کے لیے موزوں۔',
+          ? 'Check the latest conditions and local instructions before any outdoor visit.'
+          : 'بیرونی دورے سے پہلے تازہ حالات اور مقامی ہدایات دیکھیں۔',
     });
   }
 

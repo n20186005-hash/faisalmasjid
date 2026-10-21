@@ -1,24 +1,7 @@
-# Cloudflare Workers static assets — سیکیورٹی ہیڈرز
-# HTTP → HTTPS کی منتقلی کے لیے Cloudflare ڈیش بورڈ میں "Always Use HTTPS" فعال رکھیں۔
-# www → non-www (اور http → https) کی 301 ری ڈائریکٹ کے لیے Cloudflare ڈیش بورڈ میں
-# "Redirect Rules" بنائیں (Workers static assets ڈومین لیول ری ڈائریکٹ سپورٹ نہیں کرتے):
-#   Rule: (http.host eq "www.faisalmasjid.com") -> 301 https://faisalmasjid.com${path}
-#   Rule: (starts_with(http.request.uri, "http://")) -> 301 https://${host}${path}  (یا Always Use HTTPS)
-# کنونیکل ٹیگ پہلے سے non-www پر سیٹ ہے (astro.config.mjs)، ری ڈائریکٹ سے وزن ضائع نہیں ہوگا۔
-
 /*
   X-Content-Type-Options: nosniff
-  X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
-  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://upload.wikimedia.org https://www.google.com https://www.gstatic.com https://maps.gstatic.com https://www.google-analytics.com https://www.googletagmanager.com; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; frame-src 'self' https://www.google.com https://maps.google.com https://www.google.com/maps/; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests
-
-/icons/*
-  Cache-Control: public, max-age=604800
-
-/site.webmanifest
-  Content-Type: application/manifest+json
-
 /sw.js
-  Cache-Control: no-cache
+  Cache-Control: no-store
+/404.html
+  X-Robots-Tag: noindex, follow

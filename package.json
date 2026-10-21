@@ -14,11 +14,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "pnpm build && wrangler deploy",
-    "verify": "bash scripts/verify.sh",
-    "vendor:photos": "node scripts/vendor-photos.mjs"
+    "verify": "bash scripts/verify.sh"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "14.2.5",
     "@astrojs/sitemap": "3.7.3",
     "astro": "7.2.6"
   },

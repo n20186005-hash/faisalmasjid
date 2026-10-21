@@ -4,7 +4,7 @@ const { lang = 'ur' } = Astro.props;
 const en = lang === 'en';
 const t = {
   eyebrow: en ? 'Plan around the weather' : 'موسم کے مطابق منصوبہ بنائیں',
-  title: en ? 'Live weather at Faisal Mosque, Islamabad' : 'فیصل مسجد، اسلام آباد کا براہِ راست موسم',
+  title: en ? 'Model weather forecast for Faisal Mosque, Islamabad' : 'فیصل مسجد، اسلام آباد کی ماڈل موسمی پیش گوئی',
   lead: en
     ? 'Current conditions and the next seven days, so you can decide whether to carry an umbrella or plan an outdoor walk.'
     : 'موجودہ حالت اور اگلے سات دن، تاکہ آپ طے کر سکیں کہ چھتری ساتھ لے جائیں یا کھلی سیر کا منصوبہ بنائیں۔',
@@ -21,13 +21,14 @@ const t = {
   updated: en ? 'Updated' : 'اپ ڈیٹ',
   loading: en ? 'Loading current weather…' : 'موجودہ موسم لوڈ ہو رہا ہے…',
   unavailable: en
-    ? 'Live weather is not available right now. Islamabad has hot summers, a monsoon from late June to September, and mild, foggy winters — plan accordingly.'
-    : 'براہِ راست موسم اس وقت دستیاب نہیں۔ اسلام آباد میں گرم گریاں، جون کے آخر سے ستمبر تک مون سون اور ہلکی، دھند والی سردیاں ہوتی ہیں — اسی کے مطابق منصوبہ بنائیں۔',
+    ? 'Weather data is unavailable. Check current weather warnings before travelling; this module does not establish access or safety.'
+    : 'موسم دستیاب نہیں۔ تازہ انتباہات دیکھیں؛ یہ ماڈیول رسائی یا حفاظت ثابت نہیں کرتا۔',
 };
 ---
 <section id="weather" class="section section-white weather">
   <div class="container">
     <SectionHeading eyebrow={t.eyebrow} title={t.title} lead={t.lead} />
+    <p>{en?'Forecast model: Open-Meteo; not an on-site observation, prayer timetable or access notice.':'ماڈل پیش گوئی: Open-Meteo؛ موقع کا مشاہدہ، نماز کا جدول یا داخلے کا اعلان نہیں۔'} <a href="https://open-meteo.com/">Open-Meteo</a></p>
     <div class="weather-card" data-lang={lang} data-url={`/api/weather?lang=${lang}`}>
       <p class="weather-loading">{t.loading}</p>
     </div>
@@ -41,13 +42,13 @@ const t = {
         now: 'فی الحال', feels: 'محسوس', humidity: 'نمی', wind: 'ہوا', today: 'آج',
         high: 'زیادہ', low: 'کم', rain: 'بارش کا امکان', forecast: 'اگلے سات دن',
         tips: 'سفری مشورہ', updated: 'اپ ڈیٹ', unavailable:
-          'براہِ راست موسم اس وقت دستیاب نہیں۔ اسلام آباد میں گرم گریاں، جون کے آخر سے ستمبر تک مون سون اور ہلکی، دھند والی سردیاں ہوتی ہیں — اسی کے مطابق منصوبہ بنائیں۔',
+          'موسم دستیاب نہیں۔ تازہ انتباہات دیکھیں؛ یہ ماڈیول رسائی یا حفاظت ثابت نہیں کرتا۔',
       },
       en: {
         now: 'Right now', feels: 'Feels like', humidity: 'Humidity', wind: 'Wind', today: 'Today',
         high: 'High', low: 'Low', rain: 'Rain chance', forecast: 'Next 7 days',
         tips: 'Travel tips', updated: 'Updated', unavailable:
-          'Live weather is not available right now. Islamabad has hot summers, a monsoon from late June to September, and mild, foggy winters — plan accordingly.',
+          'Weather data is unavailable. Check current weather warnings before travelling; this module does not establish access or safety.',
       },
     };
     const cards = document.querySelectorAll('.weather-card');
