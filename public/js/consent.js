@@ -31,6 +31,7 @@
       }
       return;
     }
+    if (window.gtag) window.gtag('consent', 'update', { analytics_storage: 'granted' });
     if (window.__faisalmasjidLoaded) return;
     window.__faisalmasjidLoaded = true; window.dataLayer = window.dataLayer || [];
     window.gtag = function () { window.dataLayer.push(arguments); };

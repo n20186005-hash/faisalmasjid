@@ -74,6 +74,13 @@ export async function weatherResponse(_request: Request, url: URL) {
     clearTimeout(timeout);
   }
 
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return new Response(
+      JSON.stringify({ ok: false, message: lang === 'en' ? 'Weather data incomplete.' : 'موسم کا ڈیٹا نامکمل ہے۔' }),
+      { status: 200, headers: { 'content-type': 'application/json; charset=utf-8' } },
+    );
+  }
+
   const cur = data.current;
   const daily = data.daily;
   if (!cur || !daily || !Array.isArray(daily.time) || !daily.time.length || !Array.isArray(daily.weather_code) || !Array.isArray(daily.temperature_2m_max) || !Array.isArray(daily.temperature_2m_min) || !daily.time.every(v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) || [daily.weather_code,daily.temperature_2m_max,daily.temperature_2m_min].some(a => a.length < daily.time.length || !a.every(Number.isFinite)) || ![cur.temperature_2m,cur.apparent_temperature,cur.relative_humidity_2m,cur.weather_code,cur.wind_speed_10m,cur.precipitation].every(Number.isFinite)) {
