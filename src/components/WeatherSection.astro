@@ -57,15 +57,25 @@ const t = {
       const L = LABELS[lang];
       try {
         const res = await fetch(card.getAttribute('data-url'), { headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error('unavailable');
         const data = await res.json();
-        if (!data || data.ok === false) throw new Error('unavailable');
-        card.innerHTML = render(data, L);
+        if (!validWeather(data)) throw new Error('unavailable');
+        card.innerHTML = render(data, L, lang);
       } catch {
         card.innerHTML = `<p class="weather-error">${L.unavailable}</p>`;
       }
     });
 
-    function render(d, L) {
+    function validWeather(d) {
+      const numeric = (o, keys) => o && keys.every(key => Number.isFinite(o[key]));
+      const description = o => o && typeof o.symbol === 'string' && typeof o.text === 'string';
+      return d?.ok === true && numeric(d.current, ['temp', 'apparent', 'humidity', 'wind']) && description(d.current)
+        && numeric(d.today, ['tmax', 'tmin']) && description(d.today) && typeof d.updated === 'string' && Number.isFinite(Date.parse(d.updated))
+        && Array.isArray(d.daily) && d.daily.length > 0 && d.daily.length <= 7 && d.daily.every(day => numeric(day, ['tmax', 'tmin']) && typeof day.label === 'string' && typeof day.symbol === 'string')
+        && Array.isArray(d.hints) && d.hints.every(hint => hint && typeof hint.icon === 'string' && typeof hint.text === 'string');
+    }
+
+    function render(d, L, lang) {
       const c = d.current;
       const t = d.today;
       const hintHtml = (d.hints || []).map((h) => `<li><span class="hint-ic">${h.icon}</span><span>${h.text}</span></li>`).join('');
